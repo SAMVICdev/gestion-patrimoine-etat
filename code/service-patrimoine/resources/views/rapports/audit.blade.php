@@ -1,0 +1,9 @@
+@extends('layouts.app')
+
+@section('title', 'Journal d’audit')
+
+@section('content')
+    <div class="breadcrumbs"><a href="{{ route('rapports.index') }}">Rapports</a><span>/</span><strong>Journal d’audit</strong></div>
+    <section class="page-intro"><div><span class="eyebrow">ADMINISTRATION NATIONALE</span><h1>Journal d’audit</h1><p>Historique horodaté des opérations importantes sur le patrimoine.</p></div></section>
+    <section class="panel inventory-panel"><form class="filter-bar" method="GET"><label class="search-field"><span>⌕</span><input name="q" value="{{ request('q') }}" placeholder="Utilisateur, type d’objet, identifiant…" aria-label="Rechercher dans le journal"></label><select name="action"><option value="">Toutes les opérations</option>@foreach(['creation', 'modification', 'archivage', 'demande_transfert', 'decision_transfert', 'creation_inventaire', 'mise_a_jour_inventaire', 'constat_inventaire', 'signalement_bien_introuvable'] as $action)<option value="{{ $action }}" @selected(request('action') === $action)>{{ str_replace('_', ' ', $action) }}</option>@endforeach</select><button class="button button-dark" type="submit">Filtrer</button></form><div class="table-wrap"><table class="data-table"><thead><tr><th>DATE & HEURE</th><th>UTILISATEUR</th><th>ACTION</th><th>OBJET</th><th>ID</th><th>ADRESSE IP</th></tr></thead><tbody>@forelse($entries as $entry)<tr><td>{{ $entry->created_at->format('d/m/Y H:i:s') }}</td><td>{{ $entry->user?->name ?? 'Système' }}</td><td>{{ str_replace('_', ' ', $entry->action) }}</td><td>{{ class_basename($entry->type_objet) }}</td><td>{{ $entry->objet_id ?? '—' }}</td><td>{{ $entry->adresse_ip ?? '—' }}</td></tr>@empty<tr><td class="table-empty" colspan="6"><strong>Aucune opération dans ce filtre</strong></td></tr>@endforelse</tbody></table></div><div class="pagination-wrap"><span>{{ $entries->total() }} opération(s)</span>{{ $entries->links() }}</div></section>
+@endsection

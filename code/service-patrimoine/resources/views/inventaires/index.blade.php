@@ -1,0 +1,8 @@
+@extends('layouts.app')
+
+@section('title', 'Campagnes d’inventaire')
+
+@section('content')
+    <section class="page-intro"><div><span class="eyebrow">CONTRÔLE SUR LE TERRAIN</span><h1>Inventaires physiques</h1><p>Confirmez la présence des biens et signalez les écarts constatés.</p></div>@if(auth()->user()->canManageAssets())<a class="button button-primary" href="{{ route('inventaires.create') }}"><span>＋</span> Démarrer une campagne</a>@endif</section>
+    <section class="panel inventory-panel"><div class="panel-heading"><div><span class="eyebrow">CAMPAGNES</span><h2>Suivi des contrôles</h2></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>CAMPAGNE</th><th>SERVICE</th><th>DÉBUT</th><th>BIENS CONTRÔLÉS</th><th>STATUT</th><th></th></tr></thead><tbody>@forelse($campagnes as $campagne)<tr><td><a class="item-name" href="{{ route('inventaires.show', $campagne) }}">{{ $campagne->titre }}</a><small class="cell-sub">{{ $campagne->createur->name }}</small></td><td>{{ $campagne->service?->nom ?? 'Tous les services' }}</td><td>{{ $campagne->date_debut->format('d/m/Y') }}</td><td>{{ $campagne->constats_count }}</td><td><span class="status-pill status-{{ $campagne->statut }}">{{ str_replace('_', ' ', $campagne->statut) }}</span></td><td><a class="text-link" href="{{ route('inventaires.show', $campagne) }}">Ouvrir →</a></td></tr>@empty<tr><td class="table-empty" colspan="6"><strong>Aucune campagne</strong><small>Démarrez un inventaire physique pour enregistrer les premiers constats.</small></td></tr>@endforelse</tbody></table></div><div class="pagination-wrap"><span>{{ $campagnes->total() }} campagne(s)</span>{{ $campagnes->links() }}</div></section>
+@endsection

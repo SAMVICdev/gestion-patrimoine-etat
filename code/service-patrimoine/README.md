@@ -1,59 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Service patrimoine
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Service Laravel chargé de la gestion des biens de l'État. Le dépôt parent
+contient également le service d'authentification et le fichier Docker Compose.
 
-## About Laravel
+## Application web locale
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Prérequis : PHP 8.2+, Composer, Node.js et npm. Depuis
+`code/service-patrimoine/` :
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```powershell
+composer install
+npm install
+Copy-Item .env.example .env
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Créer au moins un utilisateur autorisé localement avec Tinker :
 
-## Learning Laravel
+```powershell
+php artisan tinker
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Puis, dans Tinker :
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```php
+App\Models\User::create([
+    'name' => 'Gestionnaire',
+    'email' => 'gestionnaire@example.test',
+    'password' => 'choisir-un-mot-de-passe',
+]);
+```
 
-## Laravel Sponsors
+Le mot de passe est haché par le modèle. Aucun compte ou mot de passe par
+défaut n'est fourni. Ouvrir `http://127.0.0.1:8000`, puis se connecter.
+Les variables locales se configurent dans `.env`; ne jamais versionner ce
+fichier ni des identifiants réels.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Les services Docker et PostgreSQL sont définis dans `../docker-compose.yml`.
+Le branchement de ces services sur une base partagée nécessite de configurer
+les URL de base et identifiants de chaque service dans leurs environnements.
+Ne pas utiliser les valeurs de démonstration de Docker en production.
 
-### Premium Partners
+## Vérification
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```powershell
+php artisan test
+npm run build
+```
 
-## Contributing
+Le tableau de bord, le registre, les fiches de bien, les catégories et les
+services sont protégés par une connexion Laravel. Cette première interface
+n'implémente pas encore les rôles métier ni l'authentification centralisée
+avec `service-auth`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API des biens
 
-## Code of Conduct
+Les routes `/api/biens` requièrent une session ou un jeton Laravel Sanctum.
+La connexion entre le service d'authentification et ces routes reste à mettre
+en place.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Méthode | Route | Action |
+|---|---|---|
+| `GET` | `/api/biens` | Liste paginée des biens actifs |
+| `POST` | `/api/biens` | Crée un bien |
+| `GET` | `/api/biens/{bien}` | Consulte un bien actif |
+| `PUT`, `PATCH` | `/api/biens/{bien}` | Modifie un bien |
+| `DELETE` | `/api/biens/{bien}` | Archive un bien sans effacer son historique |
 
-## Security Vulnerabilities
+Les catégories et services disposent également de routes protégées pour les
+opérations `GET` (liste et détail), `POST` et `PUT`/`PATCH` :
+`/api/categories` et `/api/services`. Leur nom est obligatoire et unique.
+La suppression n'est pas exposée afin de préserver les références utilisées
+par les biens.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+La liste accepte `categorie_id`, `service_id`, `etat`, `q` et `per_page`
+(maximum 100). La recherche `q` porte sur le numéro d'inventaire, la
+désignation et la localisation.
 
-## License
+À la création, fournir `numero_inventaire`, `designation`, `categorie_id`,
+`service_id` et `localisation`. Les identifiants de catégorie et de service
+doivent déjà exister. Les autres champs disponibles sont `description`,
+`date_acquisition`, `valeur_acquisition`, `source_financement`,
+`responsable` et `etat`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Valeurs possibles pour `etat` : `bon_etat`, `etat_moyen`, `a_reparer`,
+`en_reparation`, `hors_service`, `introuvable`. La réponse est une ressource
+JSON ; la liste inclut les métadonnées de pagination. La suppression est
+logique (`deleted_at`) et les biens archivés ne sont plus renvoyés dans
+l'API.
