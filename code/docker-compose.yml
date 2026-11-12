@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: patrimoine_etat
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d patrimoine_etat"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  service-auth:
+    build: ./service-auth
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./service-auth/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  service-patrimoine:
+    build: ./service-patrimoine
+    ports:
+      - "8002:8000"
+    env_file:
+      - ./service-patrimoine/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
