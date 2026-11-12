@@ -21,8 +21,17 @@
             <nav class="main-nav" aria-label="Navigation principale">
                 <a class="{{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><span>▦</span> Tableau de bord</a>
                 <a class="{{ request()->routeIs('biens.*') ? 'active' : '' }}" href="{{ route('biens.index') }}"><span>▤</span> Biens & inventaire</a>
-                <a class="{{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}"><span>◫</span> Catégories</a>
-                <a class="{{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}"><span>⌂</span> Services publics</a>
+                <a class="{{ request()->routeIs('transferts.*') ? 'active' : '' }}" href="{{ route('transferts.index') }}"><span>⇄</span> Affectations & transferts</a>
+                <a class="{{ request()->routeIs('inventaires.*') ? 'active' : '' }}" href="{{ route('inventaires.index') }}"><span>◷</span> Inventaires terrain</a>
+                <a class="{{ request()->routeIs('rapports.*') ? 'active' : '' }}" href="{{ route('rapports.index') }}"><span>▥</span> Rapports & audit</a>
+                @if(auth()->user()->canManageAssets())
+                    <a class="{{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}"><span>◫</span> Catégories</a>
+                @endif
+                @if(auth()->user()->isNationalAdministrator())
+                    <a class="{{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}"><span>⌂</span> Services publics</a>
+                    <a class="{{ request()->routeIs('ministeres.*') ? 'active' : '' }}" href="{{ route('ministeres.index') }}"><span>▧</span> Ministères</a>
+                    <a class="{{ request()->routeIs('utilisateurs.*') ? 'active' : '' }}" href="{{ route('utilisateurs.index') }}"><span>♙</span> Utilisateurs & rôles</a>
+                @endif
             </nav>
             <div class="sidebar-bottom">
                 <div class="secure-chip"><span>◆</span> Espace sécurisé <span class="secure-version">TLS</span></div>
@@ -38,7 +47,7 @@
                 <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
                 <div class="topbar-context"><span>DIRECTION GÉNÉRALE</span><strong>Patrimoine & domaine public</strong></div>
                 <div class="topbar-search"><span>⌕</span><a href="{{ route('biens.index') }}">Rechercher un bien, un code, une localisation…</a></div>
-                <div class="topbar-user"><span class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span><span><strong>{{ auth()->user()->name }}</strong><small>Gestionnaire</small></span></div>
+                <div class="topbar-user"><span class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span><span><strong>{{ auth()->user()->name }}</strong><small>{{ ucfirst(str_replace('_', ' ', auth()->user()->role)) }}</small></span></div>
             </header>
 
             <div class="page-content">

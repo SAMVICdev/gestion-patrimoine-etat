@@ -14,7 +14,7 @@ class ReferentielApiTest extends TestCase
 
     public function test_authenticated_user_can_manage_categories_and_services(): void
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
 
         $this->postJson('/api/categories', [
             'nom' => 'Informatique',
@@ -59,7 +59,7 @@ class ReferentielApiTest extends TestCase
 
     public function test_category_and_service_names_must_be_unique_and_required(): void
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
         Categorie::create(['nom' => 'Mobilier']);
         Service::create(['nom' => 'Service central']);
 
@@ -73,5 +73,16 @@ class ReferentielApiTest extends TestCase
             ->assertJsonValidationErrors(['nom']);
         $this->postJson('/api/services', [])->assertUnprocessable()
             ->assertJsonValidationErrors(['nom']);
+    }
+
+    public function test_only_authorized_roles_can_write_referentials(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'agent']));
+        $this->postJson('/api/categories', ['nom' => 'Informatique'])->assertForbidden();
+        $this->postJson('/api/services', ['nom' => 'Service central'])->assertForbidden();
+
+        $this->actingAs(User::factory()->create(['role' => 'gestionnaire']));
+        $this->postJson('/api/categories', ['nom' => 'Informatique'])->assertCreated();
+        $this->postJson('/api/services', ['nom' => 'Service central'])->assertForbidden();
     }
 }

@@ -187,6 +187,23 @@ h1, h2, p { margin-top: 0; }
 .reference-fields input { min-height: 32px; padding: 5px 7px; border: 1px solid transparent; background: transparent; font-weight: 700; }
 .reference-fields small { display: block; margin: 4px 7px 0; overflow: hidden; color: #89948d; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .icon-button { width: 31px; height: 31px; border: 1px solid #e6e8df; border-radius: 7px; background: white; color: #397153; }
+.service-reference-row { align-items: flex-start; }
+.service-reference-row .reference-fields { display: grid; gap: 5px; }
+.service-reference-row .reference-fields select, .user-edit-fields select, .user-edit-fields input { min-height: 31px; padding: 5px 7px; border: 1px solid #e6e5de; border-radius: 6px; background: white; color: #43594e; font-size: 9px; }
+.quick-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
+.quick-actions > a { display: grid; grid-template-columns: 35px 1fr; align-items: center; gap: 3px 10px; padding: 14px; border: 1px solid #e7e8df; border-radius: 10px; background: white; }
+.quick-actions > a > span { grid-row: span 2; display: grid; width: 34px; height: 34px; place-items: center; border-radius: 8px; background: #edf4ee; color: #397156; font-size: 17px; }
+.quick-actions strong { color: #315343; font-size: 10px; }.quick-actions small { color: #8a968e; font-size: 9px; }
+.user-layout { grid-template-columns: minmax(260px, .7fr) minmax(0, 1.5fr); }
+.user-row { display: flex; align-items: flex-start; gap: 10px; padding: 13px 0; border-top: 1px solid #efeee9; }
+.user-fields { min-width: 0; flex: 1; }.user-fields > strong { color: #395548; font-size: 11px; }.user-fields > strong span { color: #a77629; font-size: 9px; }.user-fields > small { display: block; margin: 4px 0 9px; color: #86928a; font-size: 9px; }
+.user-edit-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }.role-note { margin-top: 15px; padding: 19px; }.role-note p { margin: 8px 0; color: #68786e; font-size: 10px; }
+.report-actions { display: flex; flex-wrap: wrap; gap: 8px; }.report-grid { margin-bottom: 16px; }
+.stack-form textarea { width: 100%; padding: 8px; border: 1px solid #e5e4dc; border-radius: 7px; font-size: 11px; }.stack-form label b { color: #b57530; }
+.detail-side .stack-form + .stack-form { margin-top: 18px; padding-top: 15px; border-top: 1px solid #efeee9; }
+.timeline-entry p { margin: 5px 0 0; color: #67776d; font-size: 10px; }
+.inventory-check-form { margin-top: 15px; }
+.status-en_attente { background: #fbf2df; color: #9c7427; }.status-approuve { background: #e9f2ec; color: #347451; }.status-rejete { background: #fae9e5; color: #a74737; }.status-cloturee { background: #eaf2f4; color: #45707d; }
 
 .flash-success, .flash-error { margin-bottom: 15px; padding: 12px 15px; border: 1px solid #d6e8db; border-radius: 8px; background: #edf6ef; color: #346347; font-size: 11px; }
 .flash-error { border-color: #f0d9d4; background: #fff1ee; color: #9a4032; }
@@ -224,4 +241,11 @@ h1, h2, p { margin-top: 0; }
     .form-panel { padding: 17px; }.form-grid { grid-template-columns: 1fr; gap: 15px; }.field-full { grid-column: auto; }.form-actions { flex-direction: column-reverse; }.form-actions .button { width: 100%; }
     .detail-hero { align-items: flex-start; flex-direction: column; }.detail-hero h1 { font-size: 29px; }.detail-actions { width: 100%; }.detail-actions .button { flex: 1; }.detail-list { grid-template-columns: 1fr; }.detail-list .detail-full { grid-column: auto; }
     .login-card { padding: 27px 22px; }
+    .quick-actions { grid-template-columns: 1fr; }.report-actions { width: 100%; }.report-actions .button { flex: 1; }.user-layout { grid-template-columns: 1fr; }.user-edit-fields { grid-template-columns: 1fr; }
+}
+
+@media print {
+    body { background: #fff; }.sidebar, .topbar, .button, .report-actions, .filter-bar, .pagination-wrap { display: none !important; }
+    .main-area { margin: 0; }.page-content { width: 100%; padding: 0; }.panel, .metric-card { break-inside: avoid; box-shadow: none; }
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }.data-table th, .data-table td { color: #222; }.report-grid { break-inside: avoid; }
 }

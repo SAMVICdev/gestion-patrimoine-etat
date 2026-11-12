@@ -9,7 +9,9 @@
             <h1>Le patrimoine public,<br>en toute clarté.</h1>
             <p>Suivez les biens, les affectations et la valeur de votre parc administratif.</p>
         </div>
-        <a class="button button-primary" href="{{ route('biens.create') }}"><span>＋</span> Enregistrer un bien</a>
+        @if(auth()->user()->canManageAssets())
+            <a class="button button-primary" href="{{ route('biens.create') }}"><span>＋</span> Enregistrer un bien</a>
+        @endif
     </section>
 
     <section class="metric-grid" aria-label="Indicateurs du patrimoine">
@@ -18,6 +20,7 @@
         <article class="metric-card"><span class="metric-icon blue">◫</span><span class="metric-label">CATÉGORIES</span><strong>{{ number_format($totalCategories, 0, ',', ' ') }}</strong><small>Types de biens suivis</small></article>
         <article class="metric-card"><span class="metric-icon green">⌂</span><span class="metric-label">SERVICES</span><strong>{{ number_format($totalServices, 0, ',', ' ') }}</strong><small>Services responsables</small></article>
     </section>
+    <section class="quick-actions"><a href="{{ route('transferts.index') }}"><span>⇄</span><strong>Affectations & transferts</strong><small>Suivre les mouvements →</small></a><a href="{{ route('inventaires.index') }}"><span>◷</span><strong>Inventaires physiques</strong><small>Contrôler les biens →</small></a><a href="{{ route('rapports.index') }}"><span>▥</span><strong>Rapports patrimoniaux</strong><small>Consulter les indicateurs →</small></a></section>
 
     <section class="dashboard-grid">
         <article class="panel state-panel">
@@ -32,7 +35,7 @@
             </div>
         </article>
         <article class="panel category-panel">
-            <div class="panel-heading"><div><span class="eyebrow">RÉPARTITION</span><h2>Par catégorie</h2></div><a class="text-link" href="{{ route('categories.index') }}">Gérer →</a></div>
+            <div class="panel-heading"><div><span class="eyebrow">RÉPARTITION</span><h2>Par catégorie</h2></div>@if(auth()->user()->canManageAssets())<a class="text-link" href="{{ route('categories.index') }}">Gérer →</a>@endif</div>
             @forelse ($categories as $categorie)
                 @php($share = $totalBiens > 0 ? round($categorie->biens_count / $totalBiens * 100) : 0)
                 <div class="category-row"><span>{{ $categorie->nom }}</span><strong>{{ $categorie->biens_count }}</strong><div class="mini-track"><i style="width: {{ $share }}%"></i></div></div>

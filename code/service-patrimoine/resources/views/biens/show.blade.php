@@ -6,7 +6,9 @@
     <div class="breadcrumbs"><a href="{{ route('biens.index') }}">Biens & inventaire</a><span>/</span><strong>{{ $bien->numero_inventaire }}</strong></div>
     <section class="detail-hero">
         <div><span class="inventory-code">{{ $bien->numero_inventaire }}</span><h1>{{ $bien->designation }}</h1><p>{{ $bien->categorie->nom }} <span>·</span> {{ $bien->localisation }}</p></div>
-        <div class="detail-actions"><a class="button button-secondary" href="{{ route('biens.edit', $bien) }}">Modifier</a><form method="POST" action="{{ route('biens.archive', $bien) }}" onsubmit="return confirm('Archiver ce bien ? Il restera conservé dans l’historique.');">@csrf<button class="button button-danger" type="submit">Archiver</button></form></div>
+        @if(auth()->user()->canManageAssets())
+            <div class="detail-actions"><a class="button button-secondary" href="{{ route('biens.edit', $bien) }}">Modifier</a><form method="POST" action="{{ route('biens.archive', $bien) }}" onsubmit="return confirm('Archiver ce bien ? Il restera conservé dans l’historique.');">@csrf<button class="button button-danger" type="submit">Archiver</button></form></div>
+        @endif
     </section>
     <section class="detail-grid">
         <article class="panel detail-panel"><span class="eyebrow">INFORMATIONS DU BIEN</span><h2>Fiche patrimoniale</h2>
@@ -22,6 +24,19 @@
                 <div class="detail-full"><dt>Description</dt><dd>{{ $bien->description ?: 'Aucune description.' }}</dd></div>
             </dl>
         </article>
-        <aside class="panel detail-side"><span class="eyebrow">TRAÇABILITÉ</span><h2>Historique de la fiche</h2><div class="timeline-entry"><span class="timeline-dot"></span><div><strong>Fiche créée</strong><small>{{ $bien->created_at->format('d/m/Y à H:i') }}</small></div></div>@if($bien->updated_at->ne($bien->created_at))<div class="timeline-entry"><span class="timeline-dot gold-dot"></span><div><strong>Dernière mise à jour</strong><small>{{ $bien->updated_at->format('d/m/Y à H:i') }}</small></div></div>@endif<p class="muted">L’historique détaillé des changements sera disponible avec le journal d’audit.</p></aside>
+        <aside class="panel detail-side"><span class="eyebrow">HISTORIQUE DES ÉTATS</span><h2>Évolutions enregistrées</h2><div class="timeline-entry"><span class="timeline-dot"></span><div><strong>Fiche créée</strong><small>{{ $bien->created_at->format('d/m/Y à H:i') }}</small></div></div>@forelse($etatHistories as $history)<div class="timeline-entry"><span class="timeline-dot gold-dot"></span><div><strong>{{ ucfirst(str_replace('_', ' ', $history->etat_origine)) }} → {{ ucfirst(str_replace('_', ' ', $history->etat_destination)) }}</strong><small>{{ $history->date_modification->format('d/m/Y à H:i') }} · {{ $history->agent?->name ?? 'Système' }}</small>@if($history->commentaire)<p>{{ $history->commentaire }}</p>@endif</div></div>@empty<p class="muted">Aucun changement d’état n’a été enregistré.</p>@endforelse</aside>
     </section>
+    @if($etatHistories->contains(fn ($history) => $history->justificatif))
+        <section class="panel recent-panel">
+            <div class="panel-heading"><div><span class="eyebrow">PIÈCES JOINTES</span><h2>Justificatifs des changements d’état</h2></div></div>
+            @foreach($etatHistories as $history)
+                @if($history->justificatif)
+                    <a class="text-link" href="{{ route('biens.historique.justificatif', [$bien, $history]) }}">
+                        Télécharger le justificatif du {{ $history->date_modification->format('d/m/Y') }} →
+                    </a>
+                @endif
+            @endforeach
+        </section>
+    @endif
+    <section class="panel recent-panel"><div class="panel-heading"><div><span class="eyebrow">AFFECTATIONS SUCCESSIVES</span><h2>Historique des transferts</h2></div><a class="text-link" href="{{ route('transferts.index') }}">Tous les mouvements →</a></div><div class="table-wrap"><table class="data-table"><thead><tr><th>ORIGINE</th><th>DESTINATION</th><th>DEMANDE</th><th>DEMANDEUR</th><th>STATUT</th></tr></thead><tbody>@forelse($transferts as $transfert)<tr><td>{{ $transfert->serviceOrigine->nom }}<small class="cell-sub">{{ $transfert->localisation_origine }}</small></td><td>{{ $transfert->serviceDestination->nom }}<small class="cell-sub">{{ $transfert->localisation_destination }}</small></td><td>{{ $transfert->date_demande->format('d/m/Y') }}</td><td>{{ $transfert->demandeur->name }}</td><td><a class="status-pill status-{{ $transfert->statut }}" href="{{ route('transferts.show', $transfert) }}">{{ str_replace('_', ' ', $transfert->statut) }}</a></td></tr>@empty<tr><td class="table-empty" colspan="5"><strong>Aucun mouvement enregistré pour ce bien</strong></td></tr>@endforelse</tbody></table></div></section>
 @endsection

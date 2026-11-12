@@ -16,6 +16,7 @@ abstract class ServiceRequest extends FormRequest
                 Rule::unique('services', 'nom')->ignore($this->route('service')),
             ],
             'description' => ['nullable', 'string'],
+            'ministere_id' => ['nullable', 'integer', 'exists:ministeres,id'],
         ];
     }
 

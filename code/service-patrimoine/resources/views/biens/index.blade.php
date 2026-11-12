@@ -5,14 +5,18 @@
 @section('content')
     <section class="page-intro inventory-intro">
         <div><span class="eyebrow">REGISTRE DOMANIAL · INVENTAIRE</span><h1>Biens & inventaire</h1><p>Le registre central des biens publics et de leurs affectations.</p></div>
-        <a class="button button-primary" href="{{ route('biens.create') }}"><span>＋</span> Enregistrer un bien</a>
+        @if(auth()->user()->canManageAssets())
+            <a class="button button-primary" href="{{ route('biens.create') }}"><span>＋</span> Enregistrer un bien</a>
+        @endif
     </section>
 
     <section class="metric-grid compact-metrics">
         <article class="metric-card"><span class="metric-label">RÉSULTATS</span><strong>{{ number_format($biens->total(), 0, ',', ' ') }}</strong><small>Biens correspondant à la recherche</small></article>
         <article class="metric-card"><span class="metric-label">PAGE ACTUELLE</span><strong>{{ $biens->count() }}</strong><small>Biens affichés</small></article>
         <article class="metric-card"><span class="metric-label">RÉFÉRENTIELS</span><strong>{{ $categories->count() }} <small>catégories</small></strong><small>{{ $services->count() }} services enregistrés</small></article>
-        <article class="metric-card metric-cta"><span class="metric-icon">＋</span><span class="metric-label">BESOIN D’AJOUTER ?</span><a href="{{ route('biens.create') }}">Créer une fiche de bien →</a></article>
+        @if(auth()->user()->canManageAssets())
+            <article class="metric-card metric-cta"><span class="metric-icon">＋</span><span class="metric-label">BESOIN D’AJOUTER ?</span><a href="{{ route('biens.create') }}">Créer une fiche de bien →</a></article>
+        @endif
     </section>
 
     <section class="panel inventory-panel">

@@ -2,6 +2,7 @@
 
 namespace App\Features\Services\Http\Controllers;
 
+use App\Features\Ministeres\Models\Ministere;
 use App\Features\Services\Models\Service;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,7 @@ class ServiceWebController extends Controller
     {
         return view('services.index', [
             'services' => Service::query()->withCount('biens')->orderBy('nom')->get(),
+            'ministeres' => Ministere::query()->orderBy('nom')->get(),
         ]);
     }
 
@@ -23,6 +25,7 @@ class ServiceWebController extends Controller
         Service::create($request->validate([
             'nom' => ['required', 'string', 'max:255', 'unique:services,nom'],
             'description' => ['nullable', 'string'],
+            'ministere_id' => ['nullable', 'integer', 'exists:ministeres,id'],
         ]));
 
         return redirect()->route('services.index')->with('success', 'Le service a été créé.');
@@ -33,6 +36,7 @@ class ServiceWebController extends Controller
         $service->update($request->validate([
             'nom' => ['required', 'string', 'max:255', Rule::unique('services', 'nom')->ignore($service->id)],
             'description' => ['nullable', 'string'],
+            'ministere_id' => ['nullable', 'integer', 'exists:ministeres,id'],
         ]));
 
         return redirect()->route('services.index')->with('success', 'Le service a été mis à jour.');
