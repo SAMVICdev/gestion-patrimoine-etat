@@ -3,23 +3,58 @@
 Service Laravel chargé de la gestion des biens de l'État. Le dépôt parent
 contient également le service d'authentification et le fichier Docker Compose.
 
-## Développement
+## Application web locale
 
-Depuis `code/`, démarrer les services :
+Prérequis : PHP 8.2+, Composer, Node.js et npm. Depuis
+`code/service-patrimoine/` :
 
 ```powershell
-docker compose up -d --build
-docker compose ps
+composer install
+npm install
+Copy-Item .env.example .env
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
 ```
 
-Depuis `code/service-patrimoine/`, exécuter les tests :
+Créer au moins un utilisateur autorisé localement avec Tinker :
+
+```powershell
+php artisan tinker
+```
+
+Puis, dans Tinker :
+
+```php
+App\Models\User::create([
+    'name' => 'Gestionnaire',
+    'email' => 'gestionnaire@example.test',
+    'password' => 'choisir-un-mot-de-passe',
+]);
+```
+
+Le mot de passe est haché par le modèle. Aucun compte ou mot de passe par
+défaut n'est fourni. Ouvrir `http://127.0.0.1:8000`, puis se connecter.
+Les variables locales se configurent dans `.env`; ne jamais versionner ce
+fichier ni des identifiants réels.
+
+Les services Docker et PostgreSQL sont définis dans `../docker-compose.yml`.
+Le branchement de ces services sur une base partagée nécessite de configurer
+les URL de base et identifiants de chaque service dans leurs environnements.
+Ne pas utiliser les valeurs de démonstration de Docker en production.
+
+## Vérification
 
 ```powershell
 php artisan test
+npm run build
 ```
 
-Les variables locales se configurent dans `.env` à partir de `.env.example`.
-Ne jamais versionner `.env` ni des identifiants réels.
+Le tableau de bord, le registre, les fiches de bien, les catégories et les
+services sont protégés par une connexion Laravel. Cette première interface
+n'implémente pas encore les rôles métier ni l'authentification centralisée
+avec `service-auth`.
 
 ## API des biens
 

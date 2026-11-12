@@ -1,0 +1,11 @@
+@extends('layouts.app')
+
+@section('title', 'Catégories')
+
+@section('content')
+    <section class="page-intro"><div><span class="eyebrow">RÉFÉRENTIEL DU PATRIMOINE</span><h1>Catégories de biens</h1><p>Organisez les biens par type pour faciliter le registre et les rapports.</p></div></section>
+    <section class="reference-layout">
+        <form class="panel reference-form" method="POST" action="{{ route('categories.store') }}">@csrf<span class="eyebrow">NOUVELLE CATÉGORIE</span><h2>Ajouter au référentiel</h2><label class="field"><span>Nom <b>*</b></span><input name="nom" value="{{ old('nom') }}" required placeholder="Ex. Informatique">@error('nom')<small class="field-error">{{ $message }}</small>@enderror</label><label class="field"><span>Description</span><textarea name="description" rows="4" placeholder="Description facultative">{{ old('description') }}</textarea></label><button class="button button-primary button-wide" type="submit">Créer la catégorie <span>→</span></button></form>
+        <section class="panel reference-list"><div class="panel-heading"><div><span class="eyebrow">CATÉGORIES ACTIVES</span><h2>{{ $categories->count() }} catégorie(s)</h2></div></div>@forelse($categories as $categorie)<form class="reference-row" method="POST" action="{{ route('categories.update', $categorie) }}">@csrf @method('PUT')<div class="reference-icon">◫</div><div class="reference-fields"><input aria-label="Nom de la catégorie" name="nom" value="{{ $categorie->nom }}" required><small>{{ $categorie->biens_count }} bien(s) · {{ $categorie->description ?: 'Aucune description' }}</small></div><button class="icon-button" type="submit" aria-label="Enregistrer la catégorie">✓</button></form>@empty<p class="empty-note">Aucune catégorie enregistrée. Ajoutez-en une pour commencer.</p>@endforelse</section>
+    </section>
+@endsection
