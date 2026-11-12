@@ -1,93 +1,75 @@
 # Service patrimoine
 
-Service Laravel chargé de la gestion des biens de l'État. Le dépôt parent
-contient également le service d'authentification et le fichier Docker Compose.
+Application web et API de gestion des biens, des affectations et des inventaires.
 
-## Application web locale
+## Développement local
 
-Prérequis : PHP 8.2+, Composer, Node.js et npm. Depuis
-`code/service-patrimoine/` :
+Prérequis : PHP 8.2+, Composer, Node.js et npm. Depuis `code/`, installer les
+dépendances et créer la configuration locale des deux services :
 
 ```powershell
+Set-Location service-auth
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+php artisan migrate
+Start-Process php -ArgumentList 'artisan serve --host=127.0.0.1 --port=8001'
+
+Set-Location ..\service-patrimoine
 composer install
 npm install
 Copy-Item .env.example .env
 php artisan key:generate
 php artisan migrate
 npm run build
-php artisan serve
+php artisan serve --host=127.0.0.1 --port=8002
 ```
 
-Créer au moins un utilisateur autorisé localement avec Tinker :
+Le service patrimoine utilise `AUTH_SERVICE_URL=http://127.0.0.1:8001` en
+développement local. Les deux `.env` et bases SQLite restent locales et ne
+doivent pas être versionnées.
+
+Créer le premier administrateur national dans `service-auth` :
 
 ```powershell
-php artisan tinker
+php artisan auth:create-national-administrator admin@example.test "Administrateur national"
 ```
 
-Puis, dans Tinker :
+La commande demande un mot de passe robuste sans l’afficher. Aucun compte de
+production ou mot de passe par défaut n’est fourni. Ensuite, les gestionnaires
+et agents se créent depuis l’écran « Utilisateurs & habilitations ».
 
-```php
-App\Models\User::create([
-    'name' => 'Gestionnaire',
-    'email' => 'gestionnaire@example.test',
-    'password' => 'choisir-un-mot-de-passe',
-]);
-```
+## Docker et PostgreSQL
 
-Le mot de passe est haché par le modèle. Aucun compte ou mot de passe par
-défaut n'est fourni. Ouvrir `http://127.0.0.1:8000`, puis se connecter.
-Les variables locales se configurent dans `.env`; ne jamais versionner ce
-fichier ni des identifiants réels.
-
-Les services Docker et PostgreSQL sont définis dans `../docker-compose.yml`.
-Le branchement de ces services sur une base partagée nécessite de configurer
-les URL de base et identifiants de chaque service dans leurs environnements.
-Ne pas utiliser les valeurs de démonstration de Docker en production.
+Voir le [guide de démarrage Docker](../README.md). Il utilise deux bases
+distinctes dans PostgreSQL (`auth_service` et `patrimoine_etat`) pour garder
+les migrations et les données de chaque microservice isolées. Les bases sont
+créées au premier démarrage du volume PostgreSQL.
 
 ## Vérification
 
+Depuis `service-auth/` et `service-patrimoine/` :
+
 ```powershell
 php artisan test
-npm run build
 ```
 
-Le tableau de bord, le registre, les fiches de bien, les catégories et les
-services sont protégés par une connexion Laravel. Cette première interface
-n'implémente pas encore les rôles métier ni l'authentification centralisée
-avec `service-auth`.
+Depuis `service-patrimoine/` :
 
-## API des biens
+```powershell
+npm run build
+php vendor\bin\pint --test app routes tests
+```
 
-Les routes `/api/biens` requièrent une session ou un jeton Laravel Sanctum.
-La connexion entre le service d'authentification et ces routes reste à mettre
-en place.
+## Authentification et routes
 
-| Méthode | Route | Action |
-|---|---|---|
-| `GET` | `/api/biens` | Liste paginée des biens actifs |
-| `POST` | `/api/biens` | Crée un bien |
-| `GET` | `/api/biens/{bien}` | Consulte un bien actif |
-| `PUT`, `PATCH` | `/api/biens/{bien}` | Modifie un bien |
-| `DELETE` | `/api/biens/{bien}` | Archive un bien sans effacer son historique |
+Le service `service-auth` est la source des comptes, mots de passe, rôles et
+jetons Sanctum. Le service patrimoine valide le jeton centralisé sur les
+requêtes web et API et synchronise uniquement l’identité nécessaire à ses
+références locales. Si le service d’authentification est indisponible, l’accès
+est refusé et l’application renvoie une erreur explicite.
 
-Les catégories et services disposent également de routes protégées pour les
-opérations `GET` (liste et détail), `POST` et `PUT`/`PATCH` :
-`/api/categories` et `/api/services`. Leur nom est obligatoire et unique.
-La suppression n'est pas exposée afin de préserver les références utilisées
-par les biens.
-
-La liste accepte `categorie_id`, `service_id`, `etat`, `q` et `per_page`
-(maximum 100). La recherche `q` porte sur le numéro d'inventaire, la
-désignation et la localisation.
-
-À la création, fournir `numero_inventaire`, `designation`, `categorie_id`,
-`service_id` et `localisation`. Les identifiants de catégorie et de service
-doivent déjà exister. Les autres champs disponibles sont `description`,
-`date_acquisition`, `valeur_acquisition`, `source_financement`,
-`responsable` et `etat`.
-
-Valeurs possibles pour `etat` : `bon_etat`, `etat_moyen`, `a_reparer`,
-`en_reparation`, `hors_service`, `introuvable`. La réponse est une ressource
-JSON ; la liste inclut les métadonnées de pagination. La suppression est
-logique (`deleted_at`) et les biens archivés ne sont plus renvoyés dans
-l'API.
+Les routes `/api/biens`, `/api/categories` et `/api/services` nécessitent un
+jeton `Authorization: Bearer …` obtenu par `POST /api/login` sur le service
+d’authentification. Les écritures sont réservées aux rôles autorisés et
+filtrées selon le périmètre de service.

@@ -3,10 +3,11 @@
 use App\Features\Biens\Http\Controllers\BienController;
 use App\Features\Categories\Http\Controllers\CategorieController;
 use App\Features\Services\Http\Controllers\ServiceController;
+use App\Http\Middleware\EnsureCentralAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::name('api.')->middleware('auth:sanctum')->group(function () {
+Route::name('api.')->middleware(EnsureCentralAuth::class)->group(function () {
     Route::apiResource('biens', BienController::class)->only(['index', 'show']);
     Route::apiResource('categories', CategorieController::class)
         ->parameters(['categories' => 'categorie'])
@@ -27,4 +28,4 @@ Route::name('api.')->middleware('auth:sanctum')->group(function () {
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware(EnsureCentralAuth::class);

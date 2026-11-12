@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\CentralAuthClient;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,8 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    public function __construct(private readonly CentralAuthClient $centralAuth) {}
+
     public function create(): View
     {
         return view('auth.login');
@@ -32,7 +35,8 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $response = $this->centralAuth->login($credentials['email'], $credentials['password']);
+        if (! $response->successful()) {
             RateLimiter::hit($key, 60);
 
             throw ValidationException::withMessages([
@@ -40,14 +44,28 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        $identity = $response->json('user');
+        $token = $response->json('token');
+        if (! is_array($identity) || ! is_string($token) || $token === '') {
+            throw new \UnexpectedValueException('Le service d’authentification a renvoyé une réponse invalide.');
+        }
+
+        $user = $this->centralAuth->synchronizeUser($identity);
+        Auth::login($user, $request->boolean('remember'));
         RateLimiter::clear($key);
         $request->session()->regenerate();
+        $request->session()->put('central_auth_token', $token);
 
         return redirect()->intended(route('dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
+        $token = $request->session()->get('central_auth_token');
+        if (is_string($token) && $token !== '') {
+            $this->centralAuth->logout($token);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

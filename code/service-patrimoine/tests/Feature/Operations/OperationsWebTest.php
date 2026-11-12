@@ -20,12 +20,9 @@ class OperationsWebTest extends TestCase
         $source = Service::create(['nom' => 'Service source']);
         $destination = Service::create(['nom' => 'Service destinataire']);
         $bien = $this->createBien($source);
-        $gestionnaire = User::factory()->create([
-            'role' => 'gestionnaire',
-            'service_id' => $source->id,
-        ]);
+        $administrateur = User::factory()->create(['role' => 'administrateur_national']);
 
-        $this->actingAs($gestionnaire)
+        $this->signInAs($administrateur)
             ->post('/transferts', [
                 'bien_id' => $bien->id,
                 'service_destination_id' => $destination->id,
@@ -45,8 +42,7 @@ class OperationsWebTest extends TestCase
             'motif' => 'Deuxième demande.',
         ])->assertStatus(409);
 
-        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']))
-            ->post("/transferts/{$transfert->id}/approuver", [])
+        $this->post("/transferts/{$transfert->id}/approuver", [])
             ->assertRedirect();
 
         $this->assertDatabaseHas('transferts', [
@@ -70,7 +66,7 @@ class OperationsWebTest extends TestCase
             'service_id' => $service->id,
         ]);
 
-        $this->actingAs($gestionnaire)
+        $this->signInAs($gestionnaire)
             ->post('/inventaires', [
                 'titre' => 'Inventaire annuel',
                 'service_id' => $autreService->id,

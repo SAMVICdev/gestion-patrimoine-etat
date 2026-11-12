@@ -10,6 +10,7 @@ use App\Features\Users\Http\Controllers\UserWebController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RapportController;
+use App\Http\Middleware\EnsureCentralAuth;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/tableau-de-bord');
@@ -21,7 +22,7 @@ Route::middleware('guest')->group(function () {
         ->name('login.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(EnsureCentralAuth::class)->group(function () {
     Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/tableau-de-bord', DashboardController::class)->name('dashboard');
 

@@ -2,13 +2,14 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: patrimoine_etat
+      POSTGRES_DB: postgres
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secret
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in code/.env}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d patrimoine_etat"]
       interval: 5s
@@ -21,6 +22,13 @@ services:
       - "8001:8000"
     env_file:
       - ./service-auth/.env
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: auth_service
+      DB_USERNAME: admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in code/.env}
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,6 +39,14 @@ services:
       - "8002:8000"
     env_file:
       - ./service-patrimoine/.env
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: patrimoine_etat
+      DB_USERNAME: admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in code/.env}
+      AUTH_SERVICE_URL: http://service-auth:8000
     depends_on:
       postgres:
         condition: service_healthy

@@ -7,6 +7,7 @@ use App\Features\Categories\Models\Categorie;
 use App\Features\Services\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PatrimoineWebTest extends TestCase
@@ -32,7 +33,7 @@ class PatrimoineWebTest extends TestCase
             'localisation' => 'Lomé',
             'etat' => 'bon_etat',
         ]);
-        $this->actingAs(User::factory()->create([
+        $this->signInAs(User::factory()->create([
             'role' => 'agent',
             'service_id' => $service->id,
         ]));
@@ -54,6 +55,23 @@ class PatrimoineWebTest extends TestCase
             ->assertDontSee(route('rapports.export', ['format' => 'csv'], false));
     }
 
+    public function test_expired_central_token_redirects_and_auth_service_outage_fails_closed(): void
+    {
+        $profileUrl = rtrim(config('services.central_auth.url'), '/').'/api/user';
+        Http::fake([
+            $profileUrl => Http::sequence()
+                ->push(['message' => 'Unauthenticated.'], 401)
+                ->push([], 503),
+        ]);
+        $this->withSession(['central_auth_token' => 'revoked-token'])
+            ->get('/tableau-de-bord')
+            ->assertRedirect(route('login'));
+
+        $this->withSession(['central_auth_token' => 'valid-looking-token'])
+            ->get('/tableau-de-bord')
+            ->assertStatus(503);
+    }
+
     public function test_guest_is_redirected_to_login_and_can_sign_in_and_sign_out(): void
     {
         $this->get('/tableau-de-bord')->assertRedirect(route('login'));
@@ -62,6 +80,20 @@ class PatrimoineWebTest extends TestCase
         $user = User::factory()->create([
             'email' => 'gestionnaire@example.test',
             'password' => 'secret-password',
+        ]);
+        $identity = [
+            'id' => 501,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => 'gestionnaire',
+            'service_id' => null,
+        ];
+        Http::fake([
+            rtrim(config('services.central_auth.url'), '/').'/api/login' => Http::sequence()
+                ->push(['message' => 'Identifiants invalides.'], 422)
+                ->push(['token' => 'valid-central-token', 'user' => $identity]),
+            rtrim(config('services.central_auth.url'), '/').'/api/user' => Http::response(['user' => $identity]),
+            rtrim(config('services.central_auth.url'), '/').'/api/logout' => Http::response(['message' => 'Session terminée.']),
         ]);
 
         $this->post('/connexion', [
@@ -82,7 +114,7 @@ class PatrimoineWebTest extends TestCase
 
     public function test_authenticated_user_can_manage_inventory_and_referentials(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
+        $this->signInAs(User::factory()->create(['role' => 'administrateur_national']));
 
         $this->post('/categories', ['nom' => 'Informatique'])
             ->assertRedirect(route('categories.index'));

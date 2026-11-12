@@ -15,7 +15,7 @@ class BienApiTest extends TestCase
 
     public function test_authenticated_user_can_manage_and_archive_biens(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
+        $this->signInAs(User::factory()->create(['role' => 'administrateur_national']));
         $categorie = Categorie::create(['nom' => 'Informatique']);
         $service = Service::create(['nom' => 'Direction des systèmes']);
         $data = $this->bienData($categorie->id, $service->id);
@@ -61,7 +61,7 @@ class BienApiTest extends TestCase
 
     public function test_creation_validates_required_fields_relations_and_inventory_number_uniqueness(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
+        $this->signInAs(User::factory()->create(['role' => 'administrateur_national']));
         $categorie = Categorie::create(['nom' => 'Mobilier']);
         $service = Service::create(['nom' => 'Direction administrative']);
         $data = $this->bienData($categorie->id, $service->id);
@@ -93,7 +93,7 @@ class BienApiTest extends TestCase
 
     public function test_index_can_filter_biens_by_search_and_state(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'administrateur_national']));
+        $this->signInAs(User::factory()->create(['role' => 'administrateur_national']));
         $categorie = Categorie::create(['nom' => 'Véhicules']);
         $service = Service::create(['nom' => 'Garage central']);
         Bien::create($this->bienData($categorie->id, $service->id));
