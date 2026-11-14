@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Connexion · Patrimoine de l'État · Togo</title>
+    <title>Connexion · Patrimoine de l'État · République Togolaise</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,80 +12,81 @@
 
     {{-- Arrière-plan décoratif --}}
     <div class="login-bg" aria-hidden="true">
-        <div class="login-bg-stripe login-bg-stripe-1"></div>
-        <div class="login-bg-stripe login-bg-stripe-2"></div>
-        <div class="login-bg-stripe login-bg-stripe-3"></div>
+        <div class="login-bg-vert"></div>
+        <div class="login-bg-jaune"></div>
         <div class="login-bg-orb"></div>
     </div>
 
     <main class="login-wrap">
 
-        {{-- Panneau gauche — identité nationale --}}
+        {{-- Colonne gauche : identité nationale --}}
         <aside class="login-identity" aria-hidden="true">
-            {{-- Armoiries de la République Togolaise --}}
+
+            {{-- Blason officiel de la République Togolaise --}}
+            {{-- Drapeau : 5 bandes horizontales vert/jaune, canton rouge avec étoile blanche --}}
             <div class="login-coat">
-                <svg class="coat-svg" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Armoiries de la République Togolaise">
-                    <!-- Écu principal -->
-                    <path d="M100 15 L185 55 L185 150 Q185 210 100 230 Q15 210 15 150 L15 55 Z" fill="#006B3F"/>
-                    <!-- Bande rouge centrale -->
-                    <path d="M100 15 L185 55 L185 150 Q185 210 100 230 Q15 210 15 150 L15 55 Z" fill="none" stroke="#CE1126" stroke-width="22" stroke-dasharray="1 1000" pathLength="10"/>
-                    <!-- Canton supérieur gauche rouge -->
-                    <path d="M15 55 L15 115 L80 115 L80 55 Z" fill="#CE1126"/>
-                    <!-- Étoile blanche dans le canton -->
-                    <polygon points="47,65 51,78 65,78 54,86 58,99 47,91 36,99 40,86 29,78 43,78" fill="#FFFFFF"/>
-                    <!-- Bandes horizontales vertes et jaunes -->
-                    <rect x="80" y="55" width="105" height="20" fill="#006B3F"/>
-                    <rect x="80" y="75" width="105" height="20" fill="#FFCE00"/>
-                    <rect x="80" y="95" width="105" height="20" fill="#006B3F"/>
-                    <rect x="15" y="115" width="170" height="20" fill="#FFCE00"/>
-                    <rect x="15" y="135" width="170" height="20" fill="#CE1126"/>
-                    <!-- Zone inférieure verte -->
-                    <path d="M15 155 L15 150 Q15 210 100 230 Q185 210 185 150 L185 155 Z" fill="#006B3F"/>
-                    <!-- Bande jaune décorative bas -->
-                    <path d="M20 185 Q100 220 180 185 L180 195 Q100 232 20 195 Z" fill="#FFCE00" opacity="0.6"/>
-                    <!-- Bordure de l'écu -->
-                    <path d="M100 15 L185 55 L185 150 Q185 210 100 230 Q15 210 15 150 L15 55 Z" fill="none" stroke="#FFCE00" stroke-width="3"/>
-                    <!-- Symboles au centre bas -->
-                    <text x="100" y="175" text-anchor="middle" fill="#FFCE00" font-size="11" font-weight="bold" font-family="serif">TOGO</text>
-                    <!-- Palmes décoratives gauche -->
-                    <path d="M30 170 Q20 155 25 140 Q35 155 30 170Z" fill="#FFCE00" opacity="0.8"/>
-                    <path d="M25 165 Q12 155 15 140 Q28 152 25 165Z" fill="#FFCE00" opacity="0.6"/>
-                    <!-- Palmes décoratives droite -->
-                    <path d="M170 170 Q180 155 175 140 Q165 155 170 170Z" fill="#FFCE00" opacity="0.8"/>
-                    <path d="M175 165 Q188 155 185 140 Q172 152 175 165Z" fill="#FFCE00" opacity="0.6"/>
+                <svg class="coat-svg"
+                     viewBox="0 0 300 200"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img"
+                     aria-label="Drapeau de la République Togolaise">
+
+                    {{-- Bandes horizontales (5 bandes : vert jaune vert jaune vert) --}}
+                    <rect x="0" y="0"   width="300" height="40"  fill="#006A4A"/>
+                    <rect x="0" y="40"  width="300" height="40"  fill="#FFCE00"/>
+                    <rect x="0" y="80"  width="300" height="40"  fill="#006A4A"/>
+                    <rect x="0" y="120" width="300" height="40"  fill="#FFCE00"/>
+                    <rect x="0" y="160" width="300" height="40"  fill="#006A4A"/>
+
+                    {{-- Canton rouge (carré en haut à gauche, hauteur = 3 bandes) --}}
+                    <rect x="0" y="0" width="120" height="120" fill="#D21034"/>
+
+                    {{-- Étoile blanche à 5 branches centrée dans le canton --}}
+                    <polygon
+                        points="60,18 68,44 95,44 73,60 81,86 60,70 39,86 47,60 25,44 52,44"
+                        fill="#FFFFFF"/>
+
+                    {{-- Bordure décorative --}}
+                    <rect x="0" y="0" width="300" height="200" fill="none" stroke="#ffffff18" stroke-width="2"/>
                 </svg>
             </div>
+
             <div class="login-identity-text">
-                <div class="login-identity-flag" aria-hidden="true">
-                    <span style="background:#006B3F"></span>
-                    <span style="background:#FFCE00"></span>
-                    <span style="background:#CE1126"></span>
-                </div>
                 <strong class="login-identity-country">RÉPUBLIQUE TOGOLAISE</strong>
-                <span class="login-identity-motto">Travail · Liberté · Patrie</span>
+                <span class="login-identity-motto">Travail &middot; Liberté &middot; Patrie</span>
                 <div class="login-identity-divider"></div>
-                <span class="login-identity-ministry">Direction Générale du Patrimoine de l'État</span>
+                <span class="login-identity-ministry">
+                    Direction Générale<br>du Patrimoine de l'État
+                </span>
+                <div class="login-identity-colours" aria-label="Couleurs nationales">
+                    <span style="background:#006A4A" title="Vert — espoir, agriculture"></span>
+                    <span style="background:#FFCE00" title="Jaune — ressources naturelles"></span>
+                    <span style="background:#D21034" title="Rouge — sang versé pour l'indépendance"></span>
+                    <span style="background:#FFFFFF" title="Blanc — paix, pureté"></span>
+                </div>
             </div>
+
         </aside>
 
-        {{-- Panneau droit — formulaire --}}
+        {{-- Colonne droite : formulaire --}}
         <section class="login-card">
 
-            {{-- En-tête mobile --}}
+            {{-- Header mobile uniquement --}}
             <div class="login-mobile-header">
-                <div class="login-coat-mini">
-                    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M100 15 L185 55 L185 150 Q185 210 100 230 Q15 210 15 150 L15 55 Z" fill="#006B3F"/>
-                        <path d="M15 55 L15 115 L80 115 L80 55 Z" fill="#CE1126"/>
-                        <polygon points="47,65 51,78 65,78 54,86 58,99 47,91 36,99 40,86 29,78 43,78" fill="#FFFFFF"/>
-                        <rect x="80" y="55" width="105" height="20" fill="#006B3F"/>
-                        <rect x="80" y="75" width="105" height="20" fill="#FFCE00"/>
-                        <rect x="80" y="95" width="105" height="20" fill="#006B3F"/>
-                        <rect x="15" y="115" width="170" height="20" fill="#FFCE00"/>
-                        <rect x="15" y="135" width="170" height="20" fill="#CE1126"/>
-                        <path d="M100 15 L185 55 L185 150 Q185 210 100 230 Q15 210 15 150 L15 55 Z" fill="none" stroke="#FFCE00" stroke-width="3"/>
-                    </svg>
-                </div>
+                <svg class="login-coat-mini"
+                     viewBox="0 0 300 200"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg"
+                     aria-hidden="true">
+                    <rect x="0" y="0"   width="300" height="40"  fill="#006A4A"/>
+                    <rect x="0" y="40"  width="300" height="40"  fill="#FFCE00"/>
+                    <rect x="0" y="80"  width="300" height="40"  fill="#006A4A"/>
+                    <rect x="0" y="120" width="300" height="40"  fill="#FFCE00"/>
+                    <rect x="0" y="160" width="300" height="40"  fill="#006A4A"/>
+                    <rect x="0" y="0" width="120" height="120" fill="#D21034"/>
+                    <polygon points="60,18 68,44 95,44 73,60 81,86 60,70 39,86 47,60 25,44 52,44" fill="#FFFFFF"/>
+                </svg>
                 <div>
                     <strong>RÉPUBLIQUE TOGOLAISE</strong>
                     <small>Patrimoine de l'État</small>
@@ -95,7 +96,9 @@
             <div class="login-card-inner">
                 <p class="login-eyebrow">ESPACE DE GESTION SÉCURISÉ</p>
                 <h1 class="login-title">Connexion</h1>
-                <p class="login-subtitle">Accédez au registre national du patrimoine public.</p>
+                <p class="login-subtitle">
+                    Accédez au registre national du patrimoine public.
+                </p>
 
                 @if ($errors->any())
                     <div class="flash-error login-flash" role="alert">
@@ -147,7 +150,7 @@
 
                 <div class="login-security">
                     <span class="login-security-icon">◆</span>
-                    <span>Accès réservé aux agents habilités · Connexion chiffrée TLS</span>
+                    <span>Accès réservé aux agents habilités &middot; Connexion chiffrée TLS</span>
                 </div>
             </div>
         </section>

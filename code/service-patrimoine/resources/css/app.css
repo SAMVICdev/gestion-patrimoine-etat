@@ -15,13 +15,31 @@
     background: #f7f6f1;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
-    --forest: #0c382d;
-    --forest-light: #174b3c;
-    --gold: #bc862d;
-    --ink: #203b32;
+
+    /* ── Couleurs officielles de la République Togolaise ──
+       Source : charte graphique 2017 & flagcolorcodes.com
+       Vert   : #006A4A  Pantone 355  CMYK 93/0/100/0
+       Rouge  : #D21034  Pantone 032  CMYK 0/90/76/0
+       Jaune  : #FFCE00  Pantone 109  CMYK 0/5/100/0
+    ─────────────────────────────────────────────────── */
+    --togo-vert: #006A4A;
+    --togo-vert-sombre: #004d35;
+    --togo-vert-clair: #e6f4ee;
+    --togo-rouge: #D21034;
+    --togo-rouge-clair: #fce8ec;
+    --togo-jaune: #FFCE00;
+    --togo-jaune-clair: #fff9d6;
+
+    /* Alias sémantiques utilisés dans tout le projet */
+    --forest: #004d35;
+    --forest-light: #006A4A;
+    --gold: #FFCE00;
+    --gold-dark: #c9a200;
+    --ink: #1a3528;
     --muted: #829089;
     --line: #e8e7df;
     --paper: #fff;
+    --text-muted: #829089;
 }
 
 * {
@@ -1801,7 +1819,8 @@ p {
 }
 
 /* ============================================================
-   PAGE DE CONNEXION — REDESIGN AVEC ARMOIRIES
+   PAGE DE CONNEXION — COULEURS OFFICIELLES RÉPUBLIQUE TOGOLAISE
+   Vert #006A4A · Rouge #D21034 · Jaune #FFCE00
    ============================================================ */
 
 .login-page {
@@ -1809,10 +1828,10 @@ p {
     display: flex;
     min-height: 100vh;
     overflow: hidden;
-    background: #0d2b22;
+    background: var(--togo-vert-sombre);
 }
 
-/* Arrière-plan décoratif */
+/* Arrière-plan décoratif aux couleurs nationales */
 .login-bg {
     position: fixed;
     inset: 0;
@@ -1820,49 +1839,34 @@ p {
     z-index: 0;
 }
 
-.login-bg-stripe {
+.login-bg-vert {
     position: absolute;
-    border-radius: 999px;
-    filter: blur(80px);
-    opacity: .18;
+    width: 600px;
+    height: 600px;
+    top: -150px;
+    left: -100px;
+    border-radius: 50%;
+    background: var(--togo-vert);
+    filter: blur(100px);
+    opacity: .25;
 }
 
-.login-bg-stripe-1 {
-    width: 500px;
-    height: 500px;
-    top: -120px;
-    left: -80px;
-    background: #006B3F;
-}
-
-.login-bg-stripe-2 {
+.login-bg-jaune {
+    position: absolute;
     width: 400px;
     height: 400px;
-    bottom: -100px;
-    right: 350px;
-    background: #FFCE00;
-    opacity: .10;
-}
-
-.login-bg-stripe-3 {
-    width: 300px;
-    height: 300px;
-    top: 40%;
-    right: -60px;
-    background: #CE1126;
-    opacity: .12;
+    bottom: -80px;
+    right: 380px;
+    border-radius: 50%;
+    background: var(--togo-jaune);
+    filter: blur(90px);
+    opacity: .08;
 }
 
 .login-bg-orb {
     position: absolute;
-    width: 900px;
-    height: 900px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, #1a4535 0%, transparent 70%);
-    opacity: .5;
+    inset: 0;
+    background: radial-gradient(ellipse at 25% 50%, #003d2a 0%, transparent 60%);
 }
 
 /* Mise en page deux colonnes */
@@ -1881,9 +1885,9 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 32px;
+    gap: 36px;
     padding: 60px 48px;
-    background: linear-gradient(160deg, #0a2419 0%, #0f3828 50%, #0a2419 100%);
+    background: linear-gradient(160deg, #002d1e 0%, #004332 60%, #002d1e 100%);
     border-right: 1px solid #ffffff0d;
 }
 
@@ -1893,9 +1897,10 @@ p {
 }
 
 .coat-svg {
-    width: clamp(140px, 18vw, 200px);
+    width: clamp(220px, 24vw, 300px);
     height: auto;
-    filter: drop-shadow(0 8px 32px #00000060);
+    filter: drop-shadow(0 12px 40px #00000080);
+    border-radius: 4px;
 }
 
 .login-identity-text {
@@ -1906,48 +1911,50 @@ p {
     text-align: center;
 }
 
-.login-identity-flag {
-    display: flex;
-    width: 52px;
-    height: 8px;
-    border-radius: 3px;
-    overflow: hidden;
-    gap: 1px;
-    margin-bottom: 4px;
-}
-
-.login-identity-flag span {
-    flex: 1;
-}
-
 .login-identity-country {
     display: block;
-    color: #e8f0eb;
+    color: #e8f4ee;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: .18em;
+    letter-spacing: .2em;
 }
 
 .login-identity-motto {
-    color: #FFCE00;
+    color: var(--togo-jaune);
     font-size: 11px;
     letter-spacing: .08em;
     font-style: italic;
 }
 
 .login-identity-divider {
-    width: 40px;
+    width: 48px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #FFCE0066, transparent);
-    margin: 6px 0;
+    background: linear-gradient(90deg, transparent, #FFCE0055, transparent);
+    margin: 4px 0;
 }
 
 .login-identity-ministry {
-    color: #9dbfae;
-    font-size: 10px;
-    letter-spacing: .05em;
-    line-height: 1.6;
+    color: #8dc4a8;
+    font-size: 11px;
+    letter-spacing: .04em;
+    line-height: 1.7;
     max-width: 240px;
+    text-align: center;
+}
+
+/* Pastilles couleurs nationales */
+.login-identity-colours {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.login-identity-colours span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ffffff20;
 }
 
 /* ---- Colonne droite : formulaire ---- */
@@ -1978,7 +1985,7 @@ p {
 
 .login-title {
     margin: 0 0 6px;
-    color: #153f32;
+    color: #0d2e1f;
     font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(30px, 4vw, 42px);
     line-height: 1.1;
@@ -2014,7 +2021,7 @@ p {
 }
 
 .login-field label {
-    color: #4a5f54;
+    color: #3a5245;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .04em;
@@ -2038,7 +2045,7 @@ p {
     width: 100%;
     height: 46px;
     padding: 0 14px 0 40px;
-    border: 1.5px solid #e3e2da;
+    border: 1.5px solid #dde2de;
     border-radius: 10px;
     outline: none;
     background: #fff;
@@ -2052,8 +2059,8 @@ p {
 }
 
 .login-input-wrap input:focus {
-    border-color: #006B3F;
-    box-shadow: 0 0 0 3px #006b3f1a;
+    border-color: var(--togo-vert);
+    box-shadow: 0 0 0 3px #006a4a18;
 }
 
 .login-remember {
@@ -2066,7 +2073,7 @@ p {
 }
 
 .login-remember input {
-    accent-color: #006B3F;
+    accent-color: var(--togo-vert);
     width: 15px;
     height: 15px;
 }
@@ -2081,20 +2088,20 @@ p {
     margin-top: 4px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(135deg, #006B3F 0%, #0a4a2c 100%);
+    background: linear-gradient(135deg, var(--togo-vert) 0%, var(--togo-vert-sombre) 100%);
     color: #fff;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: .02em;
     cursor: pointer;
     transition: transform .15s, box-shadow .15s, background .15s;
-    box-shadow: 0 4px 18px #006b3f30;
+    box-shadow: 0 4px 18px #006a4a30;
 }
 
 .login-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px #006b3f40;
-    background: linear-gradient(135deg, #00843c 0%, #0d5a35 100%);
+    box-shadow: 0 8px 28px #006a4a40;
+    background: linear-gradient(135deg, #007a55 0%, #004d35 100%);
 }
 
 .login-submit:active {
@@ -2112,14 +2119,14 @@ p {
     gap: 8px;
     margin-top: 24px;
     padding-top: 18px;
-    border-top: 1px solid #e8e7df;
+    border-top: 1px solid #e3e7e3;
     color: #8a9890;
     font-size: 9px;
     letter-spacing: .04em;
 }
 
 .login-security-icon {
-    color: #c09234;
+    color: var(--togo-jaune);
     font-size: 11px;
 }
 
@@ -2127,9 +2134,9 @@ p {
    AMÉLIORATIONS GLOBALES DES INTERFACES
    ============================================================ */
 
-/* Sidebar — ajout d'un dégradé subtil et d'une bordure lumineuse */
+/* Sidebar — couleurs officielles Togo */
 .sidebar {
-    background: linear-gradient(180deg, #0e3528 0%, #0a2a1f 100%);
+    background: linear-gradient(180deg, var(--togo-vert-sombre) 0%, #002d1e 100%);
     border-right: 1px solid #ffffff08;
 }
 
@@ -2227,12 +2234,12 @@ p {
     .login-card {
         justify-content: flex-start;
         padding: 32px 24px;
-        background: linear-gradient(160deg, #0a2419 0%, #0f3828 40%, #f7f6f1 40%);
+        background: #f7f6f1;
     }
 
     .login-card-inner {
         width: 100%;
-        margin-top: 60px;
+        margin-top: 76px;
     }
 
     .login-mobile-header {
@@ -2243,27 +2250,30 @@ p {
         top: 0;
         left: 0;
         right: 0;
-        padding: 18px 24px;
-        background: linear-gradient(160deg, #0a2419 0%, #0f3828 100%);
-        color: #e8f0eb;
+        padding: 16px 24px;
+        background: linear-gradient(135deg, var(--togo-vert-sombre) 0%, var(--togo-vert) 100%);
+        color: #e8f4ee;
+        z-index: 10;
     }
 
     .login-coat-mini {
-        width: 36px;
-        height: auto;
-        flex: 0 0 36px;
+        width: 52px;
+        flex: 0 0 52px;
+        border-radius: 3px;
+        overflow: hidden;
     }
 
     .login-coat-mini svg {
         width: 100%;
         height: auto;
+        display: block;
     }
 
     .login-mobile-header strong {
         display: block;
         font-size: 10px;
         letter-spacing: .1em;
-        color: #e8f0eb;
+        color: #e8f4ee;
     }
 
     .login-mobile-header small {
