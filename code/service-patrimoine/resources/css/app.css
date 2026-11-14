@@ -70,6 +70,12 @@ button {
     flex-direction: column;
     background: var(--forest);
     color: #e5eee9;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 .brand {
@@ -159,9 +165,13 @@ button {
 .sidebar-bottom {
     display: grid;
     gap: 10px;
-    margin-top: auto;
+    margin-top: 20px;
     padding: 16px 14px 20px;
     border-top: 1px solid #ffffff16;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, #0a2a1f 18%);
+    padding-top: 28px;
 }
 
 .secure-chip,
