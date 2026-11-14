@@ -192,6 +192,7 @@ button {
     background: #174c3d;
     border: 0;
     font-size: 11px;
+    color: #d2e0d8;
 }
 
 .logout-button span {
@@ -2169,7 +2170,7 @@ p {
     transition: box-shadow .18s;
 }
 
-/* Flash messages — icône et style affiné */
+/* Flash messages — style affiné */
 .flash-success,
 .flash-error {
     display: flex;
@@ -2179,18 +2180,6 @@ p {
     border-radius: 10px;
     font-size: 11px;
     font-weight: 500;
-}
-
-.flash-success::before {
-    content: '✓';
-    font-size: 14px;
-    color: #2d7a52;
-}
-
-.flash-error::before {
-    content: '⚠';
-    font-size: 13px;
-    color: #a84435;
 }
 
 /* Avatar utilisateur — dégradé */
