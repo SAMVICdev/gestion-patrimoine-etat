@@ -31,7 +31,9 @@
                     <a class="{{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}"><span>⌂</span> Services publics</a>
                     <a class="{{ request()->routeIs('ministeres.*') ? 'active' : '' }}" href="{{ route('ministeres.index') }}"><span>▧</span> Ministères</a>
                     <a class="{{ request()->routeIs('utilisateurs.*') ? 'active' : '' }}" href="{{ route('utilisateurs.index') }}"><span>♙</span> Utilisateurs & rôles</a>
+                    <a class="{{ request()->routeIs('parametres.index') ? 'active' : '' }}" href="{{ route('parametres.index') }}"><span>⚙</span> Paramètres</a>
                 @endif
+                <a class="{{ request()->routeIs('parametres.profil') ? 'active' : '' }}" href="{{ route('parametres.profil') }}"><span>◉</span> Mon profil</a>
             </nav>
             <div class="sidebar-bottom">
                 <div class="secure-chip"><span>◆</span> Espace sécurisé <span class="secure-version">TLS</span></div>

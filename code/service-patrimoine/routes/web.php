@@ -4,6 +4,7 @@ use App\Features\Biens\Http\Controllers\BienWebController;
 use App\Features\Categories\Http\Controllers\CategorieWebController;
 use App\Features\Inventaires\Http\Controllers\CampagneInventaireWebController;
 use App\Features\Ministeres\Http\Controllers\MinistereWebController;
+use App\Features\Parametres\Http\Controllers\ParametresWebController;
 use App\Features\Services\Http\Controllers\ServiceWebController;
 use App\Features\Transferts\Http\Controllers\TransfertWebController;
 use App\Features\Users\Http\Controllers\UserWebController;
@@ -73,5 +74,11 @@ Route::middleware(EnsureCentralAuth::class)->group(function () {
         Route::get('/utilisateurs', [UserWebController::class, 'index'])->name('utilisateurs.index');
         Route::post('/utilisateurs', [UserWebController::class, 'store'])->name('utilisateurs.store');
         Route::put('/utilisateurs/{utilisateur}', [UserWebController::class, 'update'])->name('utilisateurs.update');
+        Route::get('/parametres', [ParametresWebController::class, 'index'])->name('parametres.index');
+        Route::put('/parametres', [ParametresWebController::class, 'update'])->name('parametres.update');
     });
+
+    // Profil accessible à tous les utilisateurs connectés
+    Route::get('/parametres/profil', [ParametresWebController::class, 'profil'])->name('parametres.profil');
+    Route::put('/parametres/profil', [ParametresWebController::class, 'updateProfil'])->name('parametres.profil.update');
 });
