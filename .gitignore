@@ -1,3 +1,6 @@
 # Documents de travail personnels, conserves uniquement sur cette machine
 /GUIDE_PROJET.local.md
 /HISTORIQUE.local.md
+
+# Fichier d'environnement Docker local (contient le mot de passe PostgreSQL)
+/code/.env
