@@ -1,4 +1,21 @@
-# Documentation du projet — Gestion du patrimoine de l'État
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="110">
+</p>
+
+<h1 align="center">Documentation — Gestion du Patrimoine de l'État</h1>
+
+<p align="center">
+  <strong>République Togolaise</strong> — <em>Travail · Liberté · Patrie</em>
+</p>
+
+<p align="center">
+  <a href="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white"><img src="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white" alt="PHP 8.4"></a>
+  <a href="https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white" alt="Laravel 12"></a>
+  <a href="https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white"><img src="https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL 15"></a>
+  <a href="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white"><img src="https://img.shields.io/badge/Docker%20Compose-2496ED?logo=docker&logoColor=white" alt="Docker Compose"></a>
+  <a href="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white"><img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white" alt="Vite 7"></a>
+  <a href="https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=googlechrome&logoColor=white"><img src="https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=googlechrome&logoColor=white" alt="PWA"></a>
+</p>
 
 ## Table des matières
 

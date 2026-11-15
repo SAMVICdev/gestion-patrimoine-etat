@@ -1,13 +1,47 @@
-# Gestion du Patrimoine de l'État
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="140">
+</p>
 
-**République Togolaise** — *Travail · Liberté · Patrie*
+<h1 align="center">Gestion du Patrimoine de l'État</h1>
 
-Application web de gestion des biens publics (mobilier, immobilier, équipements) pour la
-Direction Générale du Patrimoine de l'État : recensement, affectation, transfert,
-inventaire physique, valorisation et audit de l'ensemble du parc d'actifs publics.
+<p align="center">
+  <strong>République Togolaise</strong> — <em>Travail · Liberté · Patrie</em>
+</p>
 
-> Interface aux couleurs de la charte graphique de la République Togolaise,
-> armoiries officielles et photographies réelles de Lomé.
+<p align="center">
+  <a href="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white"><img src="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white" alt="PHP 8.4"></a>
+  <a href="https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white" alt="Laravel 12"></a>
+  <a href="https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white"><img src="https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL 15"></a>
+  <a href="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white"><img src="https://img.shields.io/badge/Docker%20Compose-2496ED?logo=docker&logoColor=white" alt="Docker Compose"></a>
+  <a href="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white"><img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white" alt="Vite 7"></a>
+  <a href="https://img.shields.io/badge/Composer-2-DCDCDC?logo=composer&logoColor=black"><img src="https://img.shields.io/badge/Composer-2-DCDCDC?logo=composer&logoColor=black" alt="Composer 2"></a>
+  <a href="https://img.shields.io/badge/Render-Deployed-46E3B7?logo=render&logoColor=white"><img src="https://img.shields.io/badge/Render-Deployed-46E3B7?logo=render&logoColor=white" alt="Render"></a>
+  <a href="https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=googlechrome&logoColor=white"><img src="https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=googlechrome&logoColor=white" alt="PWA"></a>
+</p>
+
+<p align="center">
+  <em>Application web de gestion des biens publics (mobilier, immobilier, équipements)
+  pour la Direction Générale du Patrimoine de l'État : recensement, affectation,
+  transfert, inventaire physique, valorisation et audit de l'ensemble du parc
+  d'actifs publics.</em>
+</p>
+
+<p align="center">
+  <em>Interface aux couleurs de la charte graphique de la République Togolaise,
+  armoiries officielles et photographies réelles de Lomé.</em>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/monument_independance.jpg" alt="Monument de l'Indépendance, Lomé" width="240">
+  &nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/place_independance.jpg" alt="Place de l'Indépendance, Lomé" width="240">
+  &nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/palais_congres.jpg" alt="Palais des Congrès, Lomé" width="240">
+</p>
+
+<p align="center">
+  <sub>Monument de l'Indépendance · Place de l'Indépendance · Palais des Congrès — Lomé, Togo</sub>
+</p>
 
 ---
 
