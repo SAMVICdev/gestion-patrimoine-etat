@@ -9,7 +9,7 @@ use Illuminate\Validation\Rules\Password;
 
 class CreateNationalAdministrator extends Command
 {
-    protected $signature = 'auth:create-national-administrator {email} {name}';
+    protected $signature = 'auth:create-national-administrator {email} {name} {--password= : Mot de passe (requis hors terminal interactif, ex. Render Shell)}';
 
     protected $description = 'Create the first national administrator account';
 
@@ -28,7 +28,7 @@ class CreateNationalAdministrator extends Command
             return self::FAILURE;
         }
 
-        $password = $this->secret('Mot de passe (12 caractères, majuscule, minuscule et chiffre)');
+        $password = $this->option('password') ?: $this->secret('Mot de passe (12 caractères, majuscule, minuscule et chiffre)');
         validator(['password' => $password], [
             'password' => ['required', Password::min(12)->letters()->mixedCase()->numbers()],
         ])->validate();
