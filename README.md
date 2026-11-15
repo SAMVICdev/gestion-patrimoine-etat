@@ -213,7 +213,6 @@ sélectionner le dépôt → Apply. Les migrations s'exécutent au démarrage de
 ```
 ├── render.yaml                  # Blueprint de déploiement Render
 ├── DOCUMENTATION.md             # Documentation fonctionnelle complète
-├── REGLES_TRAVAIL.md            # Règles de travail du projet
 ├── docs/                        # Analyse de besoin, UML, maquettes
 └── code/
     ├── docker-compose.yml       # Orchestration locale (postgres + 2 services)

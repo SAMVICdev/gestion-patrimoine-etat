@@ -4,3 +4,6 @@
 
 # Fichier d'environnement Docker local (contient le mot de passe PostgreSQL)
 /code/.env
+
+# Regles de travail internes (documents de travail, non publics)
+/REGLES_TRAVAIL.md
