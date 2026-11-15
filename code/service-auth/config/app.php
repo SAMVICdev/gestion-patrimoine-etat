@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Jeton de configuration initiale
+    |--------------------------------------------------------------------------
+    |
+    | Secret temporaire permettant de créer le premier administrateur via
+    | /setup. Laisser vide pour désactiver la page de configuration.
+    |
+    */
+
+    'setup_token' => env('SETUP_TOKEN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
