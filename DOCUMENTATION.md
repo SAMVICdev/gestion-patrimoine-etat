@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="110">
+  <img src="code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="110">
 </p>
 
 <h1 align="center">Documentation — Gestion du Patrimoine de l'État</h1>

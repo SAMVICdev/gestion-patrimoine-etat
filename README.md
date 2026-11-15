@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="140">
+  <img src="code/service-patrimoine/public/images/blason_rt.png" alt="Blason de la République Togolaise" width="140">
 </p>
 
 <h1 align="center">Gestion du Patrimoine de l'État</h1>
@@ -32,11 +32,11 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/monument_independance.jpg" alt="Monument de l'Indépendance, Lomé" width="240">
+  <img src="code/service-patrimoine/public/images/monument_independance.jpg" alt="Monument de l'Indépendance, Lomé" width="240">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/place_independance.jpg" alt="Place de l'Indépendance, Lomé" width="240">
+  <img src="code/service-patrimoine/public/images/place_independance.jpg" alt="Place de l'Indépendance, Lomé" width="240">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/SAMVICdev/gestion-patrimoine-etat/main/code/service-patrimoine/public/images/palais_congres.jpg" alt="Palais des Congrès, Lomé" width="240">
+  <img src="code/service-patrimoine/public/images/palais_congres.jpg" alt="Palais des Congrès, Lomé" width="240">
 </p>
 
 <p align="center">
