@@ -7,8 +7,10 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
@@ -37,6 +39,47 @@ class AuthController extends Controller
         ]);
     }
 
+    public function sendResetLinkEmail(Request $request): JsonResponse
+    {
+        $request->merge(['email' => mb_strtolower(trim((string) $request->input('email')))]);
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        Password::sendResetLink($request->only('email'));
+
+        return response()->json([
+            'message' => 'Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.',
+        ]);
+    }
+
+    public function reset(Request $request): JsonResponse
+    {
+        $request->merge(['email' => mb_strtolower(trim((string) $request->input('email')))]);
+        $data = $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'confirmed', PasswordRule::min(12)->letters()->mixedCase()->numbers()],
+        ]);
+
+        $status = Password::reset($data, function (User $user, string $password): void {
+            $user->password = $password;
+            $user->setRememberToken(Str::random(60));
+            $user->save();
+            $user->tokens()->delete();
+        });
+
+        if ($status !== Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => 'Ce lien de réinitialisation est invalide ou a expiré.',
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Mot de passe réinitialisé. Vous pouvez maintenant vous connecter.',
+        ]);
+    }
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()?->delete();
@@ -55,7 +98,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()],
+            'password' => ['required', 'confirmed', PasswordRule::min(12)->letters()->mixedCase()->numbers()],
             'role' => ['required', Rule::in(['gestionnaire', 'agent'])],
             'service_id' => ['required', 'integer', 'min:1'],
         ]);
@@ -72,7 +115,7 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'role' => ['required', Rule::in(User::ROLES)],
             'service_id' => ['nullable', 'integer', 'min:1'],
-            'password' => ['nullable', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()],
+            'password' => ['nullable', 'confirmed', PasswordRule::min(12)->letters()->mixedCase()->numbers()],
         ]);
 
         if ($user->is($request->user()) && $data['role'] !== 'administrateur_national') {

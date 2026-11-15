@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hors ligne · Patrimoine de l'État</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(160deg, #004d35 0%, #006A4A 55%, #0a7a58 100%);
+            color: #fff;
+            text-align: center;
+            padding: 24px;
+        }
+        .card {
+            max-width: 420px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 20px;
+            padding: 40px 32px;
+            backdrop-filter: blur(8px);
+        }
+        .card img { width: 88px; height: 88px; margin-bottom: 18px; }
+        .tricolor { display: flex; height: 5px; border-radius: 3px; overflow: hidden; margin-bottom: 22px; }
+        .tricolor span:nth-child(1) { background: #006A4A; flex: 1; }
+        .tricolor span:nth-child(2) { background: #FFCE00; flex: 1; }
+        .tricolor span:nth-child(3) { background: #D21034; flex: 1; }
+        h1 { font-size: 20px; margin-bottom: 10px; letter-spacing: .5px; }
+        p { font-size: 13.5px; color: #cfe4da; line-height: 1.6; margin-bottom: 22px; }
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 26px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #FFCE00;
+            color: #004d35;
+        }
+        button:hover { filter: brightness(1.06); }
+        .country { font-size: 10px; letter-spacing: 2px; color: #a8c9bb; margin-top: 18px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="/images/blason_rt.png" alt="Blason de la République Togolaise">
+        <div class="tricolor"><span></span><span></span><span></span></div>
+        <h1>Vous êtes hors ligne</h1>
+        <p>La connexion au serveur est interrompue. Les pages déjà consultées restent
+        accessibles et les constats d'inventaire saisis hors ligne seront
+        synchronisés automatiquement au retour du réseau.</p>
+        <button onclick="location.reload()">Réessayer</button>
+        <div class="country">RÉPUBLIQUE TOGOLAISE · Travail · Liberté · Patrie</div>
+    </div>
+</body>
+</html>

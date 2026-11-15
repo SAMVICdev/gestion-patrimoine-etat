@@ -8,6 +8,8 @@ use App\Features\Services\Models\Service;
 use App\Features\Transferts\Models\HistoriqueEtat;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\QrCodeGenerator;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,15 +75,56 @@ class BienWebController extends Controller
         return redirect()->route('biens.show', $bien)->with('success', 'Le bien a été enregistré.');
     }
 
-    public function show(Bien $bien): View
+    public function show(Bien $bien, QrCodeGenerator $qrCodes): View
     {
         $this->authorizeBien(auth()->user(), $bien);
 
         return view('biens.show', [
-            'bien' => $bien->load(['categorie', 'service']),
+            'bien' => $bien->load(['categorie', 'service', 'photos']),
+            'qrSvg' => $qrCodes->svg(route('biens.show', $bien, absolute: true), 200),
             'etatHistories' => $bien->historiqueEtats()->with('agent')->get(),
             'transferts' => $bien->transferts()->with(['serviceOrigine', 'serviceDestination', 'demandeur', 'decideur'])->latest()->get(),
         ]);
+    }
+
+    public function etiquette(Bien $bien, QrCodeGenerator $qrCodes): View
+    {
+        $this->authorizeBien(auth()->user(), $bien);
+        $bien->loadMissing(['categorie', 'service']);
+
+        return view('biens.etiquette', [
+            'bien' => $bien,
+            'qrSvg' => $qrCodes->svg(route('biens.show', $bien, absolute: true), 400),
+        ]);
+    }
+
+    public function pdf(Bien $bien, QrCodeGenerator $qrCodes)
+    {
+        $this->authorizeBien(auth()->user(), $bien);
+        $bien->load(['categorie', 'service.ministere', 'photos']);
+
+        $photos = $bien->photos->take(4)
+            ->filter(fn ($photo) => Storage::disk('local')->exists($photo->path))
+            ->map(fn ($photo) => [
+                'dataUri' => 'data:'.(Storage::disk('local')->mimeType($photo->path) ?: 'image/jpeg')
+                    .';base64,'.base64_encode(Storage::disk('local')->get($photo->path)),
+                'legende' => $photo->legende,
+            ])
+            ->values()
+            ->all();
+
+        $blasonPath = public_path('images/blason_rt.png');
+        $blason = 'data:image/png;base64,'.base64_encode(
+            is_file($blasonPath) ? file_get_contents($blasonPath) : ''
+        );
+
+        return Pdf::loadView('biens.pdf', [
+            'bien' => $bien,
+            'qrPng' => $qrCodes->pngDataUri(route('biens.show', $bien, absolute: true), 400),
+            'blason' => $blason,
+            'photos' => $photos,
+            'histories' => $bien->historiqueEtats()->with('agent')->latest('date_modification')->get(),
+        ])->setPaper('a4')->download('fiche-patrimoniale-'.$bien->numero_inventaire.'.pdf');
     }
 
     public function edit(Bien $bien): View

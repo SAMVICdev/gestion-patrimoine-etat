@@ -1,5 +1,6 @@
 <?php
 
+use App\Features\Biens\Http\Controllers\BienPhotoController;
 use App\Features\Biens\Http\Controllers\BienWebController;
 use App\Features\Categories\Http\Controllers\CategorieWebController;
 use App\Features\Inventaires\Http\Controllers\CampagneInventaireWebController;
@@ -9,6 +10,8 @@ use App\Features\Services\Http\Controllers\ServiceWebController;
 use App\Features\Transferts\Http\Controllers\TransfertWebController;
 use App\Features\Users\Http\Controllers\UserWebController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RapportController;
 use App\Http\Middleware\EnsureCentralAuth;
@@ -21,11 +24,21 @@ Route::middleware('guest')->group(function () {
     Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('login.store');
+
+    Route::get('/mot-de-passe-oublie', [ForgotPasswordController::class, 'create'])->name('password.request');
+    Route::post('/mot-de-passe-oublie', [ForgotPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('password.email');
+    Route::get('/reinitialiser-mot-de-passe', [ResetPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reinitialiser-mot-de-passe', [ResetPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
 });
 
 Route::middleware(EnsureCentralAuth::class)->group(function () {
     Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/tableau-de-bord', DashboardController::class)->name('dashboard');
+    Route::post('/tableau-de-bord/preferences', [DashboardController::class, 'savePreferences'])->name('dashboard.preferences');
 
     Route::middleware('role:administrateur_national,gestionnaire')->group(function () {
         Route::get('/biens/create', [BienWebController::class, 'create'])->name('biens.create');
@@ -34,6 +47,8 @@ Route::middleware(EnsureCentralAuth::class)->group(function () {
         Route::put('/biens/{bien}', [BienWebController::class, 'update'])->name('biens.update');
         Route::patch('/biens/{bien}', [BienWebController::class, 'update']);
         Route::post('/biens/{bien}/archiver', [BienWebController::class, 'archive'])->name('biens.archive');
+        Route::post('/biens/{bien}/photos', [BienPhotoController::class, 'store'])->name('biens.photos.store');
+        Route::delete('/biens/{bien}/photos/{photo}', [BienPhotoController::class, 'destroy'])->name('biens.photos.destroy');
         Route::get('/transferts/nouveau', [TransfertWebController::class, 'create'])->name('transferts.create');
         Route::post('/transferts', [TransfertWebController::class, 'store'])->name('transferts.store');
         Route::get('/inventaires/nouveau', [CampagneInventaireWebController::class, 'create'])->name('inventaires.create');
@@ -44,6 +59,9 @@ Route::middleware(EnsureCentralAuth::class)->group(function () {
 
     Route::get('/biens', [BienWebController::class, 'index'])->name('biens.index');
     Route::get('/biens/{bien}', [BienWebController::class, 'show'])->name('biens.show');
+    Route::get('/biens/{bien}/etiquette', [BienWebController::class, 'etiquette'])->name('biens.etiquette');
+    Route::get('/biens/{bien}/pdf', [BienWebController::class, 'pdf'])->name('biens.pdf');
+    Route::get('/biens/{bien}/photos/{photo}/fichier', [BienPhotoController::class, 'file'])->name('biens.photos.file');
     Route::get('/biens/{bien}/historique/{historique}/justificatif', [BienWebController::class, 'downloadHistoryEvidence'])
         ->name('biens.historique.justificatif');
     Route::get('/transferts', [TransfertWebController::class, 'index'])->name('transferts.index');

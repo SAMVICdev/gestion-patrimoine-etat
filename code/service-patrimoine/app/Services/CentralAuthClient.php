@@ -22,6 +22,18 @@ class CentralAuthClient
         ]));
     }
 
+    public function sendPasswordResetLink(string $email): Response
+    {
+        return $this->send(fn (PendingRequest $request) => $request->post('/api/password/email', [
+            'email' => $email,
+        ]));
+    }
+
+    public function resetPassword(array $data): Response
+    {
+        return $this->send(fn (PendingRequest $request) => $request->post('/api/password/reset', $data));
+    }
+
     public function currentUser(string $token): ?array
     {
         $response = $this->send(fn (PendingRequest $request) => $request->withToken($token)->get('/api/user'));

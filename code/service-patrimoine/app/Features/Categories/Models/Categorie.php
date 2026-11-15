@@ -18,7 +18,15 @@ class Categorie extends Model
     protected $fillable = [
         'nom',
         'description',
+        'duree_vie_annees',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'duree_vie_annees' => 'integer',
+        ];
+    }
 
     public function biens(): HasMany
     {

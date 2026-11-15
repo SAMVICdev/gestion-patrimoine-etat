@@ -8,11 +8,16 @@ use App\Features\Categories\Models\Categorie;
 use App\Features\Ministeres\Models\Ministere;
 use App\Features\Transferts\Models\HistoriqueEtat;
 use App\Features\Transferts\Models\Transfert;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RapportController extends Controller
@@ -39,9 +44,19 @@ class RapportController extends Controller
             ])
             ->get();
 
+        $valeurResiduelle = 0.0;
+        Bien::query()
+            ->tap($scope)
+            ->with('categorie:id,nom,duree_vie_annees')
+            ->get(['id', 'valeur_acquisition', 'date_acquisition', 'created_at', 'categorie_id'])
+            ->each(function (Bien $bien) use (&$valeurResiduelle): void {
+                $valeurResiduelle += $bien->valeurResiduelle() ?? 0.0;
+            });
+
         return view('rapports.index', [
             'totalBiens' => Bien::query()->tap($scope)->count(),
             'valeurTotale' => Bien::query()->tap($scope)->sum('valeur_acquisition'),
+            'valeurResiduelle' => $valeurResiduelle,
             'etats' => Bien::query()->tap($scope)->select('etat', DB::raw('count(*) as total'))->groupBy('etat')->orderBy('etat')->get(),
             'ministeres' => $ministeres,
             'categories' => Categorie::query()->withCount(['biens' => $scope])->orderByDesc('biens_count')->limit(10)->get(),
@@ -67,9 +82,18 @@ class RapportController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $request->validate([
-            'format' => ['required', 'in:csv'],
+            'format' => ['required', 'in:csv,xlsx,pdf'],
         ]);
         $user = $request->user();
+
+        if ($request->input('format') === 'xlsx') {
+            return $this->exportXlsx($user);
+        }
+
+        if ($request->input('format') === 'pdf') {
+            return $this->exportPdf($user);
+        }
+
         $name = 'registre-patrimonial-'.now()->format('Y-m-d').'.csv';
 
         return response()->streamDownload(function () use ($user): void {
@@ -106,6 +130,91 @@ class RapportController extends Controller
 
             fclose($stream);
         }, $name, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    private function exportXlsx(User $user): StreamedResponse
+    {
+        $name = 'registre-patrimonial-'.now()->format('Y-m-d').'.xlsx';
+
+        return response()->streamDownload(function () use ($user): void {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('Registre patrimoine');
+
+            $sheet->fromArray([[
+                'Numéro inventaire', 'Désignation', 'Catégorie', 'Ministère',
+                'Service', 'Localisation', 'État', 'Date acquisition',
+                'Valeur (FCFA)', 'Responsable',
+            ]], null, 'A1');
+            $sheet->getStyle('A1:J1')->applyFromArray([
+                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '006A4A']],
+            ]);
+
+            $row = 2;
+            Bien::query()
+                ->when(! $user->isNationalAdministrator(), fn (Builder $query) => $query->where('service_id', $user->service_id ?? 0))
+                ->with(['categorie', 'service.ministere'])
+                ->orderBy('numero_inventaire')
+                ->chunk(500, function ($biens) use ($sheet, &$row): void {
+                    foreach ($biens as $bien) {
+                        $sheet->fromArray([[
+                            $bien->numero_inventaire,
+                            $bien->designation,
+                            $bien->categorie->nom,
+                            $bien->service->ministere?->nom ?? '',
+                            $bien->service->nom,
+                            $bien->localisation,
+                            $bien->etat,
+                            $bien->date_acquisition?->toDateString() ?? '',
+                            $bien->valeur_acquisition !== null ? (float) $bien->valeur_acquisition : '',
+                            $bien->responsable ?? '',
+                        ]], null, 'A'.$row);
+                        $row++;
+                    }
+                });
+
+            foreach (range('A', 'J') as $column) {
+                $sheet->getColumnDimension($column)->setAutoSize(true);
+            }
+
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, $name, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    private function exportPdf(User $user)
+    {
+        $biens = Bien::query()
+            ->when(! $user->isNationalAdministrator(), fn (Builder $query) => $query->where('service_id', $user->service_id ?? 0))
+            ->with(['categorie', 'service.ministere'])
+            ->orderBy('numero_inventaire')
+            ->get()
+            ->map(fn (Bien $bien) => [
+                'numero_inventaire' => $bien->numero_inventaire,
+                'designation' => $bien->designation,
+                'categorie' => $bien->categorie->nom,
+                'ministere' => $bien->service->ministere?->nom ?? '',
+                'service' => $bien->service->nom,
+                'localisation' => $bien->localisation,
+                'etat' => $bien->etat,
+                'date_acquisition' => $bien->date_acquisition?->toDateString() ?? '',
+                'valeur_acquisition' => $bien->valeur_acquisition,
+                'responsable' => $bien->responsable ?? '',
+            ])
+            ->all();
+
+        $blasonPath = public_path('images/blason_rt.png');
+        $blason = 'data:image/png;base64,'.base64_encode(
+            is_file($blasonPath) ? file_get_contents($blasonPath) : ''
+        );
+
+        return Pdf::loadView('rapports.pdf', [
+            'biens' => $biens,
+            'blason' => $blason,
+            'totalValeur' => collect($biens)->sum(fn ($bien) => (float) ($bien['valeur_acquisition'] ?? 0)),
+        ])->setPaper('a4', 'landscape')->download('registre-patrimonial-'.now()->format('Y-m-d').'.pdf');
     }
 
     public function audit(Request $request): View

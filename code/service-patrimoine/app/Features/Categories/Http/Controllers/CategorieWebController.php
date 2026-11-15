@@ -23,6 +23,7 @@ class CategorieWebController extends Controller
         Categorie::create($request->validate([
             'nom' => ['required', 'string', 'max:255', 'unique:categories,nom'],
             'description' => ['nullable', 'string'],
+            'duree_vie_annees' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]));
 
         return redirect()->route('categories.index')->with('success', 'La catégorie a été créée.');
@@ -33,6 +34,7 @@ class CategorieWebController extends Controller
         $categorie->update($request->validate([
             'nom' => ['required', 'string', 'max:255', Rule::unique('categories', 'nom')->ignore($categorie->id)],
             'description' => ['nullable', 'string'],
+            'duree_vie_annees' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]));
 
         return redirect()->route('categories.index')->with('success', 'La catégorie a été mise à jour.');

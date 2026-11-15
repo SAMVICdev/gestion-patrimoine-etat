@@ -8,13 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="theme-color" content="#006A4A">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <div class="app-shell">
         <aside class="sidebar" id="sidebar">
             <a class="brand" href="{{ route('dashboard') }}">
-                <span class="brand-mark">P</span>
+                <span class="brand-mark"><img src="{{ asset('images/blason_rt.png') }}" alt="Blason de la République Togolaise"></span>
                 <span><strong>PATRIMOINE DE L’ÉTAT</strong><small>DOMAINE PUBLIC CENTRAL</small></span>
             </a>
             <div class="nav-caption">NAVIGATION DOMANIALE</div>
@@ -70,5 +72,6 @@
             menuToggle.setAttribute('aria-expanded', String(open));
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

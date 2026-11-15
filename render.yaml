@@ -1,0 +1,107 @@
+# Blueprint Render — Gestion du Patrimoine de l'État
+# Déploiement : pousser ce dépôt sur GitHub, puis Render Dashboard
+# → New → Blueprint → sélectionner le dépôt.
+# Les APP_KEY ci-dessous sont des clés de DÉMO : les régénérer
+# (php artisan key:generate --show) avant une mise en production.
+
+databases:
+  - name: patrimoine-db
+    plan: free
+    databaseName: patrimoine_etat
+    user: patrimoine
+
+services:
+  # ── Service d'authentification central (API) ──────────────────
+  - type: web
+    name: patrimoine-auth
+    runtime: docker
+    rootDir: code/service-auth
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      # Clé de chiffrement — régénérer avant une mise en production réelle.
+      - key: APP_KEY
+        value: base64:5FeJwo0HsiHyAfOgGRmlSdR/B/SfER3aBQ2ev/T6eyk=
+      - key: APP_URL
+        value: https://patrimoine-auth.onrender.com
+      - key: FRONTEND_URL
+        value: https://patrimoine-app.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: patrimoine-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: patrimoine-db
+          property: port
+      - key: DB_DATABASE
+        value: patrimoine_etat
+      - key: DB_USERNAME
+        fromDatabase:
+          name: patrimoine-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: patrimoine-db
+          property: password
+      # Préfixe de tables pour cohabiter avec service-patrimoine
+      # dans la même base (auth_users, auth_sessions, …).
+      - key: DB_PREFIX
+        value: auth_
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: MAIL_MAILER
+        value: log
+
+  # ── Application métier (interface web) ────────────────────────
+  - type: web
+    name: patrimoine-app
+    runtime: docker
+    rootDir: code/service-patrimoine
+    plan: free
+    healthCheckPath: /connexion
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      # Clé de chiffrement — régénérer avant une mise en production réelle.
+      - key: APP_KEY
+        value: base64:qd0bz4L8TcgNXCLBySDBrzF9KzXL1JfEdDmWPXMbxdw=
+      - key: APP_URL
+        value: https://patrimoine-app.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: patrimoine-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: patrimoine-db
+          property: port
+      - key: DB_DATABASE
+        value: patrimoine_etat
+      - key: DB_USERNAME
+        fromDatabase:
+          name: patrimoine-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: patrimoine-db
+          property: password
+      - key: AUTH_SERVICE_URL
+        value: https://patrimoine-auth.onrender.com
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: MAIL_MAILER
+        value: log

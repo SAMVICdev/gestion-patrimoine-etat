@@ -102,4 +102,31 @@ class Bien extends Model
     {
         return $this->hasMany(ConstatInventaire::class);
     }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(BienPhoto::class)->latest();
+    }
+
+    /**
+     * Valeur résiduelle estimée par amortissement linéaire.
+     * Retourne null si la catégorie n'a pas de durée de vie définie.
+     */
+    public function valeurResiduelle(): ?float
+    {
+        $dureeVie = $this->categorie?->duree_vie_annees;
+        if (! $dureeVie || $this->valeur_acquisition === null) {
+            return null;
+        }
+
+        $debut = ($this->date_acquisition ?? $this->created_at)?->copy()->startOfDay();
+        if (! $debut) {
+            return null;
+        }
+
+        $ageAnnees = max(0, $debut->diffInYears(now()->startOfDay(), false));
+        $taux = max(0.0, min(1.0, 1 - ($ageAnnees / $dureeVie)));
+
+        return round((float) $this->valeur_acquisition * $taux, 2);
+    }
 }

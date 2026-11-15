@@ -49,6 +49,7 @@ class User extends Authenticatable
         'role',
         'service_id',
         'auth_user_id',
+        'preferences',
     ];
 
     /**
@@ -72,6 +73,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'auth_user_id' => 'integer',
+            'preferences' => 'array',
+            'service_id' => 'integer',
         ];
     }
 

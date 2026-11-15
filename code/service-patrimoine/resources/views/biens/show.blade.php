@@ -20,12 +20,70 @@
                 <div><dt>Responsable / détenteur</dt><dd>{{ $bien->responsable ?: 'Non renseigné' }}</dd></div>
                 <div><dt>Date d’acquisition</dt><dd>{{ $bien->date_acquisition?->format('d/m/Y') ?? 'Non renseignée' }}</dd></div>
                 <div><dt>Valeur d’acquisition</dt><dd>{{ $bien->valeur_acquisition ? number_format((float) $bien->valeur_acquisition, 0, ',', ' ').' FCFA' : 'Non renseignée' }}</dd></div>
+                <div><dt>Valeur résiduelle estimée</dt><dd>@if($bien->valeurResiduelle() !== null){{ number_format($bien->valeurResiduelle(), 0, ',', ' ').' FCFA' }} <small class="cell-sub">amortissement linéaire · durée de vie {{ $bien->categorie->duree_vie_annees }} ans</small>@else<span class="muted">Non calculable — définir une durée de vie sur la catégorie</span>@endif</dd></div>
                 <div><dt>Source de financement</dt><dd>{{ $bien->source_financement ?: 'Non renseignée' }}</dd></div>
                 <div class="detail-full"><dt>Description</dt><dd>{{ $bien->description ?: 'Aucune description.' }}</dd></div>
             </dl>
         </article>
         <aside class="panel detail-side"><span class="eyebrow">HISTORIQUE DES ÉTATS</span><h2>Évolutions enregistrées</h2><div class="timeline-entry"><span class="timeline-dot"></span><div><strong>Fiche créée</strong><small>{{ $bien->created_at->format('d/m/Y à H:i') }}</small></div></div>@forelse($etatHistories as $history)<div class="timeline-entry"><span class="timeline-dot gold-dot"></span><div><strong>{{ ucfirst(str_replace('_', ' ', $history->etat_origine)) }} → {{ ucfirst(str_replace('_', ' ', $history->etat_destination)) }}</strong><small>{{ $history->date_modification->format('d/m/Y à H:i') }} · {{ $history->agent?->name ?? 'Système' }}</small>@if($history->commentaire)<p>{{ $history->commentaire }}</p>@endif</div></div>@empty<p class="muted">Aucun changement d’état n’a été enregistré.</p>@endforelse</aside>
     </section>
+
+    <section class="detail-grid">
+        <article class="panel detail-panel">
+            <span class="eyebrow">IDENTIFICATION</span>
+            <h2>QR code & étiquette</h2>
+            <div class="qr-box">{!! $qrSvg !!}</div>
+            <p class="muted">Code QR unique pointant vers la fiche de ce bien. Imprimez l'étiquette pour l'apposer sur le bien physique.</p>
+            <div class="qr-actions">
+                <a class="button button-primary" href="{{ route('biens.etiquette', $bien) }}">Étiquette à imprimer →</a>
+                <a class="button button-secondary" href="{{ route('biens.pdf', $bien) }}">Télécharger la fiche PDF ↓</a>
+            </div>
+        </article>
+
+        <article class="panel detail-panel">
+            <span class="eyebrow">PREUVES VISUELLES</span>
+            <h2>Photos du bien</h2>
+            @if($bien->photos->isNotEmpty())
+                <div class="photo-grid">
+                    @foreach($bien->photos as $photo)
+                        <figure class="photo-item">
+                            <a href="{{ route('biens.photos.file', [$bien, $photo]) }}" target="_blank" rel="noopener">
+                                <img src="{{ route('biens.photos.file', [$bien, $photo]) }}"
+                                     alt="{{ $photo->legende ?: $bien->designation }}"
+                                     loading="lazy">
+                            </a>
+                            @if($photo->legende)<figcaption>{{ $photo->legende }}</figcaption>@endif
+                            @if(auth()->user()->canManageAssets())
+                                <form class="photo-delete-form" method="POST"
+                                      action="{{ route('biens.photos.destroy', [$bien, $photo]) }}"
+                                      onsubmit="return confirm('Supprimer cette photo ?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="photo-delete" type="submit" title="Supprimer">✕</button>
+                                </form>
+                            @endif
+                        </figure>
+                    @endforeach
+                </div>
+            @else
+                <p class="muted">Aucune photo n'a encore été jointe à ce bien.</p>
+            @endif
+
+            @if(auth()->user()->canManageAssets())
+                <form class="photo-upload" method="POST"
+                      action="{{ route('biens.photos.store', $bien) }}"
+                      enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp"
+                           multiple required aria-label="Photos du bien">
+                    <button class="button button-secondary" type="submit">Ajouter des photos</button>
+                </form>
+                @error('photos')<p class="field-error">{{ $message }}</p>@enderror
+                @error('photos.*')<p class="field-error">{{ $message }}</p>@enderror
+            @endif
+        </article>
+    </section>
+
     @if($etatHistories->contains(fn ($history) => $history->justificatif))
         <section class="panel recent-panel">
             <div class="panel-heading"><div><span class="eyebrow">PIÈCES JOINTES</span><h2>Justificatifs des changements d’état</h2></div></div>

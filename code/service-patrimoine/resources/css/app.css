@@ -71,6 +71,11 @@ select {
     -webkit-tap-highlight-color: transparent;
 }
 
+::selection {
+    background: #006A4A;
+    color: #fff;
+}
+
 button {
     cursor: pointer;
 }
@@ -160,6 +165,11 @@ button {
     border-radius: 0 9px 9px 0;
     color: #d0ddd5;
     font-size: 12px;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.main-nav a:hover {
+    transform: translateX(3px);
 }
 
 .main-nav a span {
@@ -230,6 +240,34 @@ button {
 .main-area {
     min-height: 100vh;
     margin-left: 250px;
+    /* Arrière-plan : photo réelle (Place de l'Indépendance, Lomé)
+       + filigrane du blason officiel de la République Togolaise,
+       le tout voilé pour préserver la lisibilité du contenu */
+    background:
+        linear-gradient(rgba(247, 246, 241, .9), rgba(247, 246, 241, .94)),
+        url('/images/blason_rt.png') right 4rem top 50% / 48vmin auto no-repeat fixed,
+        url('/images/place_independance.jpg') center top / cover no-repeat fixed;
+}
+
+/* Bordure tricolore de gauche — sous la barre de navigation,
+   signature de la charte graphique de la République Togolaise */
+.main-area::after {
+    content: '';
+    position: fixed;
+    z-index: 5;
+    top: 68px;
+    bottom: 0;
+    left: 250px;
+    width: 9px;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        var(--togo-vert) 0%,
+        var(--togo-vert) 33.4%,
+        var(--togo-jaune) 33.4%,
+        var(--togo-jaune) 66.7%,
+        var(--togo-rouge) 66.7%,
+        var(--togo-rouge) 100%);
+    box-shadow: 3px 0 14px rgba(0, 45, 30, .15);
 }
 
 .topbar {
@@ -525,6 +563,11 @@ p {
     border-radius: 13px;
     background: #fff;
     box-shadow: 0 2px 5px #1c362706;
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.panel:hover {
+    box-shadow: 0 10px 30px #1c362712;
 }
 
 .state-panel,
@@ -660,11 +703,20 @@ p {
 .data-table th {
     padding: 12px 11px;
     background: #f7f6f1;
+    border-bottom: 2px solid #dfe7e1;
     color: #79867e;
     font-size: 8px;
     font-weight: 700;
     letter-spacing: .08em;
     white-space: nowrap;
+}
+
+.data-table tbody tr {
+    transition: background .15s ease;
+}
+
+.data-table tbody tr:hover {
+    background: #f4f8f4;
 }
 
 .data-table th:first-child {
@@ -728,15 +780,25 @@ p {
 }
 
 .status-pill {
-    display: inline-block;
-    padding: 5px 7px;
-    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 999px;
     background: #e9f2ec;
     color: #347451;
     font-size: 9px;
     font-weight: 700;
     white-space: nowrap;
     text-transform: capitalize;
+}
+
+.status-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
 }
 
 .status-etat_moyen {
@@ -1250,6 +1312,13 @@ p {
     border: 1px solid #e7e8df;
     border-radius: 10px;
     background: white;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.quick-actions>a:hover {
+    transform: translateY(-3px);
+    border-color: #cfdccf;
+    box-shadow: 0 8px 22px #1c362712;
 }
 
 .quick-actions>a>span {
@@ -1400,43 +1469,6 @@ p {
     color: #9a4032;
 }
 
-.login-page {
-    display: grid;
-    min-height: 100vh;
-    place-items: center;
-    padding: 25px;
-    background: radial-gradient(ellipse at 18% 15%, #e8eee6 0%, transparent 40%), #f5f4ee;
-}
-
-.login-card {
-    width: min(100%, 430px);
-    padding: 36px;
-    border: 1px solid #e8e6dc;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 18px 65px #19372912;
-}
-
-.login-brand {
-    margin: -4px 0 34px;
-    padding: 0 0 22px;
-    border-bottom: 1px solid #efeee8;
-    color: #2e4c3e;
-}
-
-.login-brand small {
-    color: #849188;
-}
-
-.login-card .eyebrow {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.login-card h1 {
-    font-size: 34px;
-}
-
 .muted {
     color: #819087;
     font-size: 11px;
@@ -1513,6 +1545,10 @@ p {
         margin-left: 220px;
     }
 
+    .main-area::after {
+        left: 220px;
+    }
+
     .topbar {
         gap: 15px;
         padding: 0 22px;
@@ -1549,6 +1585,11 @@ p {
 
     .main-area {
         margin-left: 0;
+    }
+
+    .main-area::after {
+        left: 0;
+        top: 60px;
     }
 
     .topbar {
@@ -1828,45 +1869,98 @@ p {
     display: flex;
     min-height: 100vh;
     overflow: hidden;
-    background: var(--togo-vert-sombre);
+    background: var(--forest);
 }
 
-/* Arrière-plan décoratif aux couleurs nationales */
-.login-bg {
+/* Bande tricolore de bord gauche — signature charte graphique RT */
+.login-edge {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 10px;
+    background: linear-gradient(180deg,
+        var(--togo-vert) 0%,
+        var(--togo-vert) 33.4%,
+        var(--togo-jaune) 33.4%,
+        var(--togo-jaune) 66.7%,
+        var(--togo-rouge) 66.7%,
+        var(--togo-rouge) 100%);
+    box-shadow: 4px 0 18px rgba(0, 0, 0, .35);
+}
+
+/* Photo réelle plein écran : Place de l'Indépendance et
+   Palais des Congrès, Lomé — République Togolaise */
+.login-photo {
     position: fixed;
     inset: 0;
-    pointer-events: none;
     z-index: 0;
 }
 
-.login-bg-vert {
+/* Diaporama : images empilées avec fondu enchaîné */
+.login-photo-img {
     position: absolute;
-    width: 600px;
-    height: 600px;
-    top: -150px;
-    left: -100px;
-    border-radius: 50%;
-    background: var(--togo-vert);
-    filter: blur(100px);
-    opacity: .25;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 32%;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+}
+
+.login-photo-img.is-active {
+    opacity: 1;
+}
+
+.login-photo-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(100deg,
+            rgba(0, 45, 30, .93) 0%,
+            rgba(0, 45, 30, .74) 38%,
+            rgba(0, 45, 30, .42) 68%,
+            rgba(0, 45, 30, .68) 100%);
+}
+
+/* Filigrane : blason officiel de la République Togolaise
+   grand médaillon discret centré derrière le contenu */
+.login-blason {
+    position: fixed;
+    z-index: 1;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.login-blason-img {
+    width: min(56vmin, 540px);
+    height: auto;
+    opacity: .15;
+    -webkit-mask-image: radial-gradient(closest-side, #000 25%, transparent 72%);
+    mask-image: radial-gradient(closest-side, #000 25%, transparent 72%);
+}
+
+/* Pas d'arrière-plan sombre — fond sobre et institutionnel */
+.login-bg {
+    display: none;
+}
+
+.login-bg-vert {
+    display: none;
 }
 
 .login-bg-jaune {
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    bottom: -80px;
-    right: 380px;
-    border-radius: 50%;
-    background: var(--togo-jaune);
-    filter: blur(90px);
-    opacity: .08;
+    display: none;
 }
 
 .login-bg-orb {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 25% 50%, #003d2a 0%, transparent 60%);
+    display: none;
 }
 
 /* Mise en page deux colonnes */
@@ -1883,78 +1977,220 @@ p {
 .login-identity {
     display: flex;
     flex-direction: column;
+    color: #eef6f1;
+    overflow: hidden;
+}
+
+/* Corps central */
+.login-identity-body {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 36px;
-    padding: 60px 48px;
-    background: linear-gradient(160deg, #002d1e 0%, #004332 60%, #002d1e 100%);
-    border-right: 1px solid #ffffff0d;
+    gap: 26px;
+    flex: 1;
+    padding: 40px 48px 24px;
+    text-align: center;
 }
 
-.login-coat {
+/* En-tête institutionnel : blason + identité regroupés */
+.login-identity-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Armoiries officielles — badge clair sur photo */
+.login-coat-wrap {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 132px;
+    height: 132px;
+    padding: 14px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, .38);
+    border: 3px solid rgba(255, 206, 0, .55);
 }
 
-.coat-svg {
-    width: clamp(220px, 24vw, 300px);
-    height: auto;
-    filter: drop-shadow(0 12px 40px #00000080);
-    border-radius: 4px;
+.login-coat-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px #00000022);
 }
 
 .login-identity-text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-align: center;
 }
 
 .login-identity-country {
     display: block;
-    color: #e8f4ee;
+    color: #ffffff;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: .2em;
+    letter-spacing: .18em;
+    font-family: 'DM Sans', sans-serif;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, .35);
+}
+
+/* Filet jaune sous le nom — contraste sur photo */
+.login-identity-rule {
+    width: 48px;
+    height: 3px;
+    background: var(--togo-jaune);
+    margin: 2px auto;
+    border-radius: 2px;
 }
 
 .login-identity-motto {
-    color: var(--togo-jaune);
-    font-size: 11px;
-    letter-spacing: .08em;
+    color: #d8e6df;
+    font-size: 10px;
+    letter-spacing: .06em;
     font-style: italic;
 }
 
 .login-identity-divider {
-    width: 48px;
+    width: 32px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #FFCE0055, transparent);
+    background: rgba(255, 255, 255, .3);
     margin: 4px 0;
 }
 
+/* Bloc « service gestionnaire » — libellé + nom du service */
+.login-identity-ministry-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    padding: 14px 22px;
+    border-top: 1px solid rgba(255, 255, 255, .18);
+    border-bottom: 1px solid rgba(255, 255, 255, .18);
+}
+
+.login-identity-ministry-label {
+    color: var(--togo-jaune);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .22em;
+}
+
 .login-identity-ministry {
-    color: #8dc4a8;
+    color: #d9eee4;
     font-size: 11px;
-    letter-spacing: .04em;
+    font-weight: 600;
+    letter-spacing: .05em;
     line-height: 1.7;
-    max-width: 240px;
     text-align: center;
 }
 
-/* Pastilles couleurs nationales */
-.login-identity-colours {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
+/* ---- Vraie photo : Monument de l'Indépendance, Lomé ---- */
+.login-monument {
+    margin: 4px 0 0;
+    width: min(100%, 300px);
 }
 
-.login-identity-colours span {
+.login-monument-frame {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .28);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+    background: var(--forest);
+}
+
+.login-monument-img {
     display: block;
-    width: 20px;
-    height: 20px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform .6s ease;
+}
+
+.login-monument-frame:hover .login-monument-img {
+    transform: scale(1.04);
+}
+
+.login-monument-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
     border-radius: 50%;
-    border: 2px solid #ffffff20;
+    background: rgba(255, 206, 0, .92);
+    color: var(--forest);
+    font-size: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+}
+
+.login-monument-caption {
+    margin-top: 12px;
+    color: #e8f2ed;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, .4);
+}
+
+.login-monument-caption small {
+    display: block;
+    margin-top: 3px;
+    color: #a9c4b8;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: none;
+}
+
+/* Drapeau miniature */
+.login-mini-flag {
+    width: 72px;
+    height: 48px;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px #00000025;
+    flex-shrink: 0;
+}
+
+.login-mini-flag svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Pied de colonne — fond vert officiel */
+.login-identity-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--togo-vert);
+    color: #e8f4ee;
+    font-size: 9px;
+    letter-spacing: .06em;
+    flex-shrink: 0;
+}
+
+.login-identity-secure {
+    color: var(--togo-jaune);
+    font-weight: 700;
+}
+
+/* Pastilles couleurs nationales — supprimées, remplacées par drapeau SVG */
+.login-identity-colours {
+    display: none;
 }
 
 /* ---- Colonne droite : formulaire ---- */
@@ -1963,16 +2199,39 @@ p {
     align-items: center;
     justify-content: center;
     padding: 48px 32px;
-    background: #f7f6f1;
 }
 
 .login-mobile-header {
     display: none;
 }
 
+/* Carte glassmorphism posée sur la photo réelle */
 .login-card-inner {
-    width: min(100%, 400px);
+    position: relative;
+    width: min(100%, 420px);
+    padding: 38px 36px 32px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid rgba(255, 255, 255, .75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 24px 70px rgba(0, 20, 12, .38);
 }
+
+/* Barre tricolore sommitale de la carte — charte graphique RT */
+.login-card-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    height: 5px;
+}
+
+.login-card-progress span:nth-child(1) { flex: 1; background: var(--togo-vert); }
+.login-card-progress span:nth-child(2) { flex: 1; background: var(--togo-jaune); }
+.login-card-progress span:nth-child(3) { flex: 1; background: var(--togo-rouge); }
 
 .login-eyebrow {
     display: block;
@@ -2078,6 +2337,44 @@ p {
     height: 15px;
 }
 
+.login-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+}
+
+.login-forgot {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--togo-vert);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.login-forgot:hover {
+    color: #004d35;
+    text-decoration: underline;
+}
+
+.login-back-link {
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 11.5px;
+}
+
+.login-back-link a {
+    color: #6b7a71;
+    text-decoration: none;
+}
+
+.login-back-link a:hover {
+    color: var(--togo-vert);
+    text-decoration: underline;
+}
+
 .login-submit {
     display: flex;
     align-items: center;
@@ -2140,11 +2437,16 @@ p {
     border-right: 1px solid #ffffff08;
 }
 
-/* Brand — armoiries miniature dans la sidebar */
+/* Brand — blason officiel de la République Togolaise */
 .brand-mark {
-    background: linear-gradient(145deg, #d3a344, #a97626);
-    box-shadow: 0 2px 10px #d3a34430;
-    font-size: 20px;
+    background: #ffffff;
+    box-shadow: 0 2px 12px #00000038;
+}
+
+.brand-mark img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
 /* Topbar — légère amélioration visuelle */
@@ -2233,13 +2535,14 @@ p {
 
     .login-card {
         justify-content: flex-start;
-        padding: 32px 24px;
-        background: #f7f6f1;
+        padding: 32px 20px;
     }
 
     .login-card-inner {
         width: 100%;
         margin-top: 76px;
+        padding: 32px 24px 28px;
+        background: rgba(255, 255, 255, .97);
     }
 
     .login-mobile-header {
@@ -2250,37 +2553,51 @@ p {
         top: 0;
         left: 0;
         right: 0;
-        padding: 16px 24px;
-        background: linear-gradient(135deg, var(--togo-vert-sombre) 0%, var(--togo-vert) 100%);
-        color: #e8f4ee;
+        padding: 10px 20px;
+        background: rgba(0, 45, 30, .88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--togo-jaune);
         z-index: 10;
     }
 
-    .login-coat-mini {
-        width: 52px;
-        flex: 0 0 52px;
-        border-radius: 3px;
+    .login-mobile-coat {
+        width: 44px;
+        flex: 0 0 44px;
+        padding: 4px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, .95);
         overflow: hidden;
     }
 
-    .login-coat-mini svg {
+    .login-mobile-coat-img {
         width: 100%;
-        height: auto;
-        display: block;
+        height: 44px;
+        object-fit: contain;
     }
 
-    .login-mobile-header strong {
+    .login-mobile-text strong {
         display: block;
         font-size: 10px;
         letter-spacing: .1em;
-        color: #e8f4ee;
+        color: #ffffff;
     }
 
-    .login-mobile-header small {
+    .login-mobile-text small {
         display: block;
         font-size: 9px;
-        color: #9dbfae;
+        color: var(--togo-jaune);
         margin-top: 2px;
+        font-weight: 600;
+    }
+
+    .login-mobile-text em {
+        display: block;
+        margin-top: 2px;
+        color: #9db8ac;
+        font-size: 8px;
+        font-style: italic;
+        letter-spacing: .04em;
     }
 }
 
@@ -2343,4 +2660,259 @@ p {
 
 .login-foot span {
     color: #a17d35;
+}
+/* ============================================================
+   PHOTOS DU BIEN & QR CODE / ÉTIQUETTE
+   ============================================================ */
+
+.qr-box {
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    margin-bottom: 14px;
+    border: 1px solid #e8e6da;
+    border-radius: 12px;
+    background: #fffdf7;
+}
+
+.qr-box svg {
+    width: 150px;
+    height: 150px;
+}
+
+.qr-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.photo-item {
+    position: relative;
+    margin: 0;
+    border: 1px solid #e8e6da;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f7f6f1;
+}
+
+.photo-item a {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .25s ease;
+}
+
+.photo-item a:hover img {
+    transform: scale(1.05);
+}
+
+.photo-item figcaption {
+    padding: 7px 9px;
+    color: #5e6d64;
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+.photo-delete-form {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+
+.photo-delete {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(210, 16, 52, .92);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+
+.photo-item:hover .photo-delete {
+    opacity: 1;
+}
+
+.photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid #efeee8;
+}
+
+.photo-upload input[type=file] {
+    flex: 1;
+    min-width: 200px;
+    font-size: 10px;
+    color: #5e6d64;
+}
+
+/* ============================================================
+   TABLEAU DE BORD PERSONNALISABLE
+   ============================================================ */
+
+.dash-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.dash-toolbar-hint {
+    font-size: 11.5px;
+    color: #7b8a81;
+}
+
+.dash-toolbar-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.dash-widget {
+    position: relative;
+    min-width: 0;
+    transition: opacity .18s ease;
+}
+
+.dash-widget--wide {
+    grid-column: 1 / -1;
+}
+
+.dash-widget--off {
+    display: none;
+}
+
+.dashboard-widgets.is-customizing .dash-widget--off {
+    display: block;
+    opacity: .45;
+}
+
+.dash-widget-controls {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 5;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(0, 77, 53, .92);
+    color: #fff;
+    font-size: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+}
+
+.is-customizing .dash-widget {
+    outline: 2px dashed rgba(0, 106, 74, .35);
+    outline-offset: 3px;
+    border-radius: 14px;
+}
+
+.is-customizing .dash-widget-controls {
+    display: inline-flex;
+}
+
+.dash-widget-name {
+    margin-right: 4px;
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+.dash-widget-btn {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.dash-widget-btn:hover {
+    background: rgba(255, 255, 255, .32);
+}
+
+.depreciation-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.depreciation-summary > div {
+    padding: 10px 12px;
+    border: 1px solid #e8e6da;
+    border-radius: 10px;
+    background: #faf9f4;
+}
+
+.depreciation-summary .metric-label {
+    display: block;
+    font-size: 8.5px;
+    letter-spacing: .6px;
+    color: #7b8a81;
+    margin-bottom: 4px;
+}
+
+.depreciation-summary strong {
+    font-size: 13px;
+    color: #004d35;
+}
+
+@media (max-width: 900px) {
+    .dashboard-widgets {
+        grid-template-columns: 1fr;
+    }
+
+    .depreciation-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   FILE D'ATTENTE HORS LIGNE (constats d'inventaire)
+   ============================================================ */
+
+.offline-queue-notice {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border: 1px solid #f0dfa8;
+    border-radius: 10px;
+    background: #fdf6e3;
+    color: #7a5b12;
+    font-size: 11.5px;
+    font-weight: 600;
 }
