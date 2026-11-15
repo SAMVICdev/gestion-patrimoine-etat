@@ -72,14 +72,51 @@ base locale pour établir la session.
 
 ## Stack technique
 
-| Couche       | Technologies                                             |
-|--------------|----------------------------------------------------------|
-| Backend      | Laravel 12, PHP 8.2+, Sanctum                            |
-| Frontend     | Blade, Vite, CSS Vanilla (charte graphique Togo)         |
-| Base         | PostgreSQL                                               |
-| Export       | Dompdf (PDF), PhpSpreadsheet (Excel), endroid/qr-code    |
-| PWA          | Manifest, Service Worker, file hors-ligne localStorage   |
-| Infra        | Docker, Docker Compose, Render (déploiement)             |
+### Framework & backend
+
+| Outil | Version | Rôle |
+|---|---|---|
+| PHP | 8.4 (image Docker) — requis `^8.2` | Langage serveur |
+| Laravel | 12.72.0 | Framework des 2 services |
+| Laravel Sanctum | 4.4.0 | Authentification par tokens API |
+| Laravel Tinker | 2.11.1 | Console interactive |
+| Laravel Pint | 1.30.4 | Formatage du code PHP |
+| Composer | 2.x | Gestionnaire de dépendances PHP |
+
+### Base de données
+
+| Outil | Version | Rôle |
+|---|---|---|
+| PostgreSQL | 15 | Base de données principale |
+| Extensions PHP | `pdo_pgsql`, `zip`, `gd` | Connexion PG, exports Excel, images/QR |
+
+### Packages métier (service-patrimoine)
+
+| Package | Version | Rôle |
+|---|---|---|
+| barryvdh/laravel-dompdf | 3.1.2 | Génération PDF (dompdf 3.1.6) |
+| endroid/qr-code | 5.1.0 | QR codes des biens |
+| phpoffice/phpspreadsheet | 5.11.0 | Export Excel .xlsx |
+
+### Frontend
+
+| Outil | Version | Rôle |
+|---|---|---|
+| Vite | ^7.0.7 | Build des assets |
+| laravel-vite-plugin | ^2.0.0 | Intégration Vite/Laravel |
+| Tailwind CSS | 4.3.5 | Framework CSS (prévu) |
+| Node.js | 22-alpine (build Docker) | Exécution du build |
+| Blade | — | Moteur de templates PHP |
+| Service Worker + Web App Manifest | — | Mode hors-ligne (PWA) |
+
+### Infrastructure & déploiement
+
+| Outil | Usage | Rôle |
+|---|---|---|
+| Docker | images `php:8.4-cli`, `node:22-alpine`, `postgres:15` | Conteneurisation |
+| Docker Compose | v2 | Orchestration locale (3 services) |
+| Render | Blueprint `render.yaml` | Hébergement cloud |
+| Git | — | Versioning (GitHub) |
 
 ---
 

@@ -67,14 +67,56 @@ francophone (devise FCFA, langue française). Elle peut être adaptée
 
 ### Stack technologique
 
-| Couche            | Technologie                          |
-|-------------------|--------------------------------------|
-| Backend           | PHP 8.2+, Laravel 12                 |
-| Frontend          | Blade templates, Vite, CSS vanilla   |
-| Base de données   | PostgreSQL 15 (production), SQLite (tests) |
-| Auth              | Laravel Sanctum (jetons Bearer)      |
-| Conteneurisation  | Docker, Docker Compose               |
-| Qualité du code   | Laravel Pint (PSR-12), PHPUnit 11    |
+#### Framework & backend
+
+| Outil               | Version                        | Rôle                                |
+|---------------------|--------------------------------|-------------------------------------|
+| PHP                 | 8.4 (image Docker), requis ^8.2 | Langage serveur                     |
+| Laravel             | 12.72.0                        | Framework des deux services         |
+| Laravel Sanctum     | 4.4.0                          | Authentification par jetons Bearer  |
+| Laravel Tinker      | 2.11.1                         | Console interactive                |
+| Laravel Pint        | 1.30.4                         | Formatage du code (PSR-12)         |
+| Composer            | 2.x                            | Gestionnaire de dépendances PHP     |
+| PHPUnit             | 11.x (dev)                     | Tests                               |
+
+#### Base de données
+
+| Outil            | Version  | Rôle                                             |
+|------------------|----------|--------------------------------------------------|
+| PostgreSQL       | 15       | Base de données principale (Docker)              |
+| SQLite           | —        | Base de test/développement local                 |
+| Extensions PHP   | `pdo_pgsql`, `zip`, `gd` | Connexion PG, exports Excel, images/QR  |
+
+#### Packages métier (service-patrimoine)
+
+| Package                    | Version   | Rôle                        |
+|----------------------------|-----------|-----------------------------|
+| barryvdh/laravel-dompdf     | 3.1.2     | Génération des PDF          |
+| dompdf/dompdf               | 3.1.6     | Moteur de rendu PDF         |
+| endroid/qr-code             | 5.1.0     | QR codes uniques par bien   |
+| phpoffice/phpspreadsheet    | 5.11.0    | Export Excel (.xlsx)        |
+
+#### Frontend
+
+| Outil                  | Version    | Rôle                                   |
+|------------------------|------------|----------------------------------------|
+| Blade                  | —          | Moteur de templates PHP                |
+| Vite                   | ^7.0.7     | Build des assets                       |
+| laravel-vite-plugin    | ^2.0.0     | Intégration Vite / Laravel             |
+| Tailwind CSS           | 4.3.5      | Framework CSS                          |
+| Node.js                | 22 (build Docker) | Exécution du build des assets    |
+| CSS vanilla            | —          | Charte graphique de la République      |
+| Service Worker         | —          | Mode hors-ligne (PWA)                  |
+| Web App Manifest       | —          | Installation PWA                       |
+
+#### Infrastructure & déploiement
+
+| Outil           | Usage                                        | Rôle                        |
+|-----------------|----------------------------------------------|-----------------------------|
+| Docker          | `php:8.4-cli`, `node:22-alpine`, `postgres:15` | Conteneurisation          |
+| Docker Compose  | v2                                           | Orchestration locale        |
+| Render          | `render.yaml` (Blueprint)                    | Hébergement web + PostgreSQL |
+| Git / GitHub    | —                                            | Gestion de versions         |
 
 ### Schéma d'architecture
 
@@ -109,9 +151,14 @@ Page d'accueil après connexion. Affiche :
 - Répartition des biens par état (bon état, à réparer, hors service…)
 - Top 5 des catégories les plus représentées
 - 5 derniers biens enregistrés
+- **Widget dépréciation** : valeur résiduelle totale et répartition par catégorie
 
 Le tableau de bord est **scopé** : un gestionnaire ne voit que les biens
 de son service, l'administrateur national voit tout.
+
+Le tableau de bord est **personnalisable** : chaque utilisateur peut masquer,
+réordonner et réafficher les widgets via le bouton « Personnaliser ».
+Les préférences sont enregistrées par utilisateur.
 
 ### 4.2 Gestion des biens (`/biens`)
 Le cœur du registre patrimonial.
@@ -140,6 +187,11 @@ Le cœur du registre patrimonial.
 - Archiver (suppression douce — le bien reste dans la base)
 - Consulter l'historique complet des changements d'état
 - Télécharger les justificatifs de changement d'état
+- **QR code** unique affiché sur la fiche + étiquette imprimable
+- **Photos** : ajout, consultation et suppression (stockage sécurisé)
+- **Fiche PDF** : document officiel A4 (identité de la République, QR, photos)
+- **Valeur résiduelle** calculée automatiquement par dépréciation linéaire
+  (durée de vie paramétrée sur la catégorie)
 
 ### 4.3 Transferts et affectations (`/transferts`)
 Gère les mouvements de biens entre services.
@@ -174,7 +226,9 @@ Campagnes d'inventaire physique périodiques.
 
 ### 4.5 Rapports et audit (`/rapports`)
 - **Tableau de synthèse** : statistiques par ministère, service, catégorie
-- **Export CSV** : registre complet téléchargeable (compatible Excel)
+- **Fiche patrimoniale PDF** : document officiel A4 avec QR code et photos
+- **Registre PDF** : état complet du parc en A4 paysage
+- **Export Excel** (.xlsx) et **CSV** : registre téléchargeable
 - **Journal d'audit** : toutes les opérations horodatées avec l'auteur
   (accessible uniquement à l'administrateur national)
 
@@ -214,7 +268,7 @@ et changer son mot de passe.
 | Gérer les services et ministères                | ✓                       |              |       |
 | Gérer les utilisateurs                          | ✓                       |              |       |
 | Voir le journal d'audit complet                 | ✓                       |              |       |
-| Exporter le registre CSV                        | ✓                       | ✓            |       |
+| Exporter le registre (CSV / Excel / PDF)       | ✓                       | ✓            |       |
 | Modifier les paramètres de la plateforme        | ✓                       |              |       |
 | Modifier son propre profil                      | ✓                       | ✓            | ✓     |
 
@@ -470,20 +524,21 @@ Admin ou Gestionnaire clôture la campagne
 
 ---
 
-## 12. Évolutions prévues
+## 12. Fonctionnalités avancées
 
-Ces fonctionnalités sont identifiées mais pas encore implémentées :
+Les fonctionnalités suivantes ont été implémentées :
 
-| # | Fonctionnalité                   | Description                                                        |
-|---|----------------------------------|--------------------------------------------------------------------|
-| 1 | Export PDF                       | Rapports et fiches de bien en PDF (via DOMPDF ou Browsershot)      |
-| 2 | Export Excel                     | Registre en .xlsx avec mise en forme (via PhpSpreadsheet)          |
-| 3 | QR codes                         | QR code unique par bien, imprimable sur étiquette physique         |
-| 4 | Photos des biens                 | Galerie de photos attachées à chaque bien                          |
-| 5 | Fonctionnement hors ligne        | PWA ou cache Service Worker pour les agents sur le terrain         |
-| 6 | Notifications                    | Alertes e-mail (transfert en attente, campagne ouverte…)           |
-| 7 | Tableau de bord personnalisable  | Widgets réorganisables par l'utilisateur                           |
-| 8 | Dépréciation automatique         | Calcul de la valeur résiduelle selon la catégorie                  |
+| # | Fonctionnalité                   | Statut       | Description                                                        |
+|---|----------------------------------|--------------|--------------------------------------------------------------------|
+| 1 | Export PDF                       | ✅ Implémenté | Fiche patrimoniale officielle et registre PDF (Dompdf, A4)          |
+| 2 | Export Excel                     | ✅ Implémenté | Registre .xlsx avec mise en forme (PhpSpreadsheet)                  |
+| 3 | QR codes                         | ✅ Implémenté | QR code unique par bien + étiquette imprimable (endroid/qr-code)    |
+| 4 | Photos des biens                 | ✅ Implémenté | Galerie de photos par fiche, stockage sécurisé                      |
+| 5 | Fonctionnement hors ligne        | ✅ Implémenté | PWA installable + file locale des constats d'inventaire             |
+| 6 | Notifications                    | ⏳ En attente | Alertes e-mail — nécessite la configuration SMTP                    |
+| 7 | Tableau de bord personnalisable  | ✅ Implémenté | Widgets réordonnables/masquables, préférences par utilisateur       |
+| 8 | Dépréciation automatique         | ✅ Implémenté | Valeur résiduelle linéaire selon la durée de vie de la catégorie    |
+| 9 | Mot de passe oublié              | ✅ Implémenté | Réinitialisation par e-mail via le service d'authentification       |
 
 ---
 
