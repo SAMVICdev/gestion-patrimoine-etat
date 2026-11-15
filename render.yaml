@@ -28,7 +28,7 @@ services:
       - key: APP_URL
         value: https://patrimoine-auth.onrender.com
       - key: FRONTEND_URL
-        value: https://patrimoine-app.onrender.com
+        value: https://patrimoine-app-bzw4.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -76,7 +76,7 @@ services:
       - key: APP_KEY
         value: base64:qd0bz4L8TcgNXCLBySDBrzF9KzXL1JfEdDmWPXMbxdw=
       - key: APP_URL
-        value: https://patrimoine-app.onrender.com
+        value: https://patrimoine-app-bzw4.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -99,6 +99,9 @@ services:
           property: password
       - key: AUTH_SERVICE_URL
         value: https://patrimoine-auth.onrender.com
+      # L'URL publique réelle de ce service est attribuée par Render
+      # (ex. patrimoine-app-bzw4.onrender.com) — APP_URL ci-dessus
+      # doit correspondre à l'URL affichée dans le dashboard.
       - key: SESSION_DRIVER
         value: database
       - key: CACHE_STORE
