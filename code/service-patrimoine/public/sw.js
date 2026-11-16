@@ -5,7 +5,7 @@
  *  - requêtes API / POST : réseau uniquement (jamais mises en cache)
  */
 
-const CACHE_VERSION = 'patrimoine-v1';
+const CACHE_VERSION = 'patrimoine-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 const OFFLINE_URL = '/offline.html';
@@ -42,6 +42,19 @@ function isStaticAsset(url) {
         || url.pathname.startsWith('/fonts/');
 }
 
+// Pages contenant des formulaires CSRF : jamais servies depuis le cache,
+// sinon un jeton expiré provoque des erreurs 419 à la soumission.
+const NO_CACHE_PATHS = [
+    '/connexion',
+    '/mot-de-passe-oublie',
+    '/reinitialiser-mot-de-passe',
+    '/deconnexion',
+];
+
+function isNoCachePage(url) {
+    return NO_CACHE_PATHS.includes(url.pathname);
+}
+
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
@@ -69,6 +82,11 @@ self.addEventListener('fetch', (event) => {
                 }).catch(() => caches.match(request));
             })
         );
+        return;
+    }
+
+    // Pages auth : toujours réseau, jamais de cache (jeton CSRF frais requis)
+    if (request.mode === 'navigate' && isNoCachePage(url)) {
         return;
     }
 
