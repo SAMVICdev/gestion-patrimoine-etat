@@ -236,6 +236,17 @@ sélectionner le dépôt → Apply. Les migrations s'exécutent au démarrage de
 
 ---
 
+## Documents téléchargeables
+
+| Document | Format | Description |
+|---|---|---|
+| [Documentation projet](docs/docx/Documentation_Projet.docx) | .docx | Documentation fonctionnelle et technique complète |
+| [Guide utilisateur](docs/docx/Guide_Utilisateur.docx) | .docx | Guide d'utilisation officiel (10 chapitres) |
+| [Script vidéo tutoriel](docs/docx/Script_Video_Tutoriel.docx) | .docx | Script de montage et narration pour la vidéo de présentation |
+| [README projet](docs/docx/README_Projet.docx) | .docx | Présentation générale du projet |
+
+---
+
 ## Documentation
 
 - [`DOCUMENTATION.md`](DOCUMENTATION.md) — documentation fonctionnelle et technique complète
