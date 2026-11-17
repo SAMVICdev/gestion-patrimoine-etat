@@ -45,28 +45,22 @@
 
 ---
 
-## Documents téléchargeables
+<h2 align="center">⬇ Documents téléchargeables</h2>
 
-### Dossier de conception (format Word)
+<p align="center">
+  <a href="docs/Analyse_besoin_Gestion_Patrimoine_Etat.docx"><img src="https://img.shields.io/badge/Télécharger-Analyse_du_besoin-006A4A?style=for-the-badge" alt="Télécharger l'analyse du besoin"></a>
+  <a href="docs/fiche-technique.docx"><img src="https://img.shields.io/badge/Télécharger-Fiche_technique-006A4A?style=for-the-badge" alt="Télécharger la fiche technique"></a>
+  <a href="docs/Fiche_Financiere_Gestion_Patrimoine_Etat.docx"><img src="https://img.shields.io/badge/Télécharger-Fiche_financière-006A4A?style=for-the-badge" alt="Télécharger la fiche financière"></a>
+  <a href="docs/uml/Gestion_Patrimoine_Etat_Dossier_Conception.docx"><img src="https://img.shields.io/badge/Télécharger-Dossier_UML-006A4A?style=for-the-badge" alt="Télécharger le dossier UML"></a>
+</p>
 
-| Document | Fichier |
-|---|---|
-| Analyse du besoin | [Analyse_besoin_Gestion_Patrimoine_Etat.docx](docs/Analyse_besoin_Gestion_Patrimoine_Etat.docx) |
-| Fiche technique | [fiche-technique.docx](docs/fiche-technique.docx) |
-| Fiche financière | [Fiche_Financiere_Gestion_Patrimoine_Etat.docx](docs/Fiche_Financiere_Gestion_Patrimoine_Etat.docx) |
-| Dossier de conception UML | [Gestion_Patrimoine_Etat_Dossier_Conception.docx](docs/uml/Gestion_Patrimoine_Etat_Dossier_Conception.docx) |
-| Diagramme de cas d'utilisation | [diagramme_de_cas_utilisation.png](docs/uml/diagramme_de_cas_utilisation.png) |
-| Diagramme de classes | [diagromme_de_classe.png](docs/uml/diagromme_de_classe.png) |
-| Maquettes d'écrans | [maquette_ecran1.jpeg](docs/maquettes/maquette_ecran1.jpeg) · [maquette_ecran2.jpeg](docs/maquettes/maquette_ecran2.jpeg) · [maquette_ecran3.jpeg](docs/maquettes/maquette_ecran3.jpeg) |
-
-### Documentation générée
-
-| Document | Format | Description |
-|---|---|---|
-| [Documentation projet](docs/docx/Documentation_Projet.docx) | .docx | Documentation fonctionnelle et technique complète |
-| [Guide utilisateur](docs/docx/Guide_Utilisateur.docx) | .docx | Guide d'utilisation officiel (10 chapitres) |
-| [Script vidéo tutoriel](docs/docx/Script_Video_Tutoriel.docx) | .docx | Script de montage et narration pour la vidéo de présentation |
-| [README projet](docs/docx/README_Projet.docx) | .docx | Présentation générale du projet |
+<p align="center">
+  <a href="docs/docx/Documentation_Projet.docx"><img src="https://img.shields.io/badge/Télécharger-Documentation_projet-006A4A?style=for-the-badge" alt="Télécharger la documentation"></a>
+  <a href="docs/docx/Guide_Utilisateur.docx"><img src="https://img.shields.io/badge/Télécharger-Guide_utilisateur-006A4A?style=for-the-badge" alt="Télécharger le guide utilisateur"></a>
+  <a href="docs/docx/README_Projet.docx"><img src="https://img.shields.io/badge/Télécharger-Présentation_projet-006A4A?style=for-the-badge" alt="Télécharger la présentation"></a>
+  <a href="docs/uml/diagramme_de_cas_utilisation.png"><img src="https://img.shields.io/badge/Télécharger-Diagramme_cas_utilisation-006A4A?style=for-the-badge" alt="Télécharger le diagramme de cas d'utilisation"></a>
+  <a href="docs/uml/diagromme_de_classe.png"><img src="https://img.shields.io/badge/Télécharger-Diagramme_de_classes-006A4A?style=for-the-badge" alt="Télécharger le diagramme de classes"></a>
+</p>
 
 ---
 
