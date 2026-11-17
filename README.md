@@ -45,6 +45,31 @@
 
 ---
 
+## Documents téléchargeables
+
+### Dossier de conception (format Word)
+
+| Document | Fichier |
+|---|---|
+| Analyse du besoin | [Analyse_besoin_Gestion_Patrimoine_Etat.docx](docs/Analyse_besoin_Gestion_Patrimoine_Etat.docx) |
+| Fiche technique | [fiche-technique.docx](docs/fiche-technique.docx) |
+| Fiche financière | [Fiche_Financiere_Gestion_Patrimoine_Etat.docx](docs/Fiche_Financiere_Gestion_Patrimoine_Etat.docx) |
+| Dossier de conception UML | [Gestion_Patrimoine_Etat_Dossier_Conception.docx](docs/uml/Gestion_Patrimoine_Etat_Dossier_Conception.docx) |
+| Diagramme de cas d'utilisation | [diagramme_de_cas_utilisation.png](docs/uml/diagramme_de_cas_utilisation.png) |
+| Diagramme de classes | [diagromme_de_classe.png](docs/uml/diagromme_de_classe.png) |
+| Maquettes d'écrans | [maquette_ecran1.jpeg](docs/maquettes/maquette_ecran1.jpeg) · [maquette_ecran2.jpeg](docs/maquettes/maquette_ecran2.jpeg) · [maquette_ecran3.jpeg](docs/maquettes/maquette_ecran3.jpeg) |
+
+### Documentation générée
+
+| Document | Format | Description |
+|---|---|---|
+| [Documentation projet](docs/docx/Documentation_Projet.docx) | .docx | Documentation fonctionnelle et technique complète |
+| [Guide utilisateur](docs/docx/Guide_Utilisateur.docx) | .docx | Guide d'utilisation officiel (10 chapitres) |
+| [Script vidéo tutoriel](docs/docx/Script_Video_Tutoriel.docx) | .docx | Script de montage et narration pour la vidéo de présentation |
+| [README projet](docs/docx/README_Projet.docx) | .docx | Présentation générale du projet |
+
+---
+
 ## Fonctionnalités
 
 ### Registre des biens
@@ -236,20 +261,10 @@ sélectionner le dépôt → Apply. Les migrations s'exécutent au démarrage de
 
 ---
 
-## Documents téléchargeables
-
-| Document | Format | Description |
-|---|---|---|
-| [Documentation projet](docs/docx/Documentation_Projet.docx) | .docx | Documentation fonctionnelle et technique complète |
-| [Guide utilisateur](docs/docx/Guide_Utilisateur.docx) | .docx | Guide d'utilisation officiel (10 chapitres) |
-| [Script vidéo tutoriel](docs/docx/Script_Video_Tutoriel.docx) | .docx | Script de montage et narration pour la vidéo de présentation |
-| [README projet](docs/docx/README_Projet.docx) | .docx | Présentation générale du projet |
-
----
-
 ## Documentation
 
 - [`DOCUMENTATION.md`](DOCUMENTATION.md) — documentation fonctionnelle et technique complète
+- [`docs/`](docs/) — analyse du besoin, fiches technique et financière, dossier UML, maquettes, tutoriels
 - [`code/README.md`](code/README.md) — démarrage Docker et création du compte admin
 - [`code/service-patrimoine/README.md`](code/service-patrimoine/README.md) — dev local sans Docker
 - [`code/service-auth/README.md`](code/service-auth/README.md) — service d'authentification
